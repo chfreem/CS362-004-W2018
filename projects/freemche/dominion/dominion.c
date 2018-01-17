@@ -1060,22 +1060,8 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
 
 		
     case embargo: 
-	    cardEffectStatus = embargoEffect(state);
-      //+2 Coins
-      state->coins = state->coins + 2;
-			
-      //see if selected pile is in play
-      if ( state->supplyCount[choice1] == -1 )
-	{
-	  return -1;
-	}
-			
-      //add embargo token to selected supply pile
-      state->embargoTokens[choice1]++;
-			
-      //trash card
-      discardCard(handPos, currentPlayer, state, 1);		
-      return 0;
+	    cardEffectStatus = embargoEffect(choice1, state, handPos);
+	    return cardEffectStatus;
 		
     case outpost:
       //set outpost flag
@@ -1169,9 +1155,10 @@ int adventurerEffect(struct gameState *state)
 		if (cardDrawn == copper || cardDrawn == silver || cardDrawn == gold)
 			drawnTreasure++;
 		else{
+			z++;
 			tempHand[z]=cardDrawn;
 			state->handCount[currentPlayer]--; //this should just remove the top card (the most recently drawn one).
-			z++;
+			//Original location:  z++;
 		}
 	}
 	while(z-1>=0){
@@ -1187,7 +1174,8 @@ int adventurerEffect(struct gameState *state)
 int mineEffect(int choice1, int choice2, struct gameState *state, int handPos)
 {
 	int currentPlayer = whoseTurn(state);
-	int j = state->hand[currentPlayer][choice1];  //store card we will trash
+	//Original line:  int j = state->hand[currentPlayer][choice2];  //store card we will trash
+	int j = state->hand[currentPlayer][choice2];  //store card we will trash
 	int i;
 
 	if (state->hand[currentPlayer][choice1] < copper || state->hand[currentPlayer][choice1] > gold)
@@ -1245,7 +1233,8 @@ int remodelEffect(int choice1, int choice2, struct gameState *state, int handPos
 	//discard trashed card
 	for (i = 0; i < state->handCount[currentPlayer]; i++)
 	{
-		if (state->hand[currentPlayer][i] == j)
+		if (state->hand[currentPlayer][i] == state->hand[currentPlayer][choice1])
+		//  Original line:  if (state->hand[currentPlayer][i] == j)
 		{
 			discardCard(i, currentPlayer, state, 0);			
 			break;
@@ -1256,12 +1245,14 @@ int remodelEffect(int choice1, int choice2, struct gameState *state, int handPos
 	return 0;
 }
 
+//  Allows you to take 3 cards from your deck and put them into your hand.
 int smithyEffect(struct gameState *state, int handPos)
 {
 	int currentPlayer = whoseTurn(state);
 	int i;
 	//+3 Cards
-	for (i = 0; i < 3; i++)
+	for (i = 0; i <= 3; i++)
+//  Original line:  	for (i = 0; i < 3; i++)
 	{
 		drawCard(currentPlayer, state);
 	}
@@ -1271,8 +1262,23 @@ int smithyEffect(struct gameState *state, int handPos)
 	return 0;
 }
 
-int embargoEffect(struct gameState *state)
+int embargoEffect(int choice1, struct gameState *state, int handPos)
 {
+	int currentPlayer = whoseTurn(state);
+	//+2 Coins
+	state->coins = state->coins + 2;
+
+	//see if selected pile is in play
+	if ( state->supplyCount[choice1] == -1 )
+	{
+		return -1;
+	}
+
+	//add embargo token to selected supply pile
+	state->embargoTokens[choice1]++;
+
+	//trash card
+	discardCard(handPos, currentPlayer, state, 1);		
 	return 0;
 }
 

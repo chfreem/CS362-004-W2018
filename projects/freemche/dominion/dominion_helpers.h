@@ -15,7 +15,7 @@ int adventurerEffect(struct gameState *state);
 int mineEffect(int choice1, int choice2, struct gameState *state, int handPos);
 int remodelEffect(int choice1, int choice2, struct gameState *state, int handPos);
 int smithyEffect(struct gameState *state, int handPos);
-int embargoEffect(struct gameState *state);
+int embargoEffect(int choice1, struct gameState *state, int handPos);
 
 
 #endif

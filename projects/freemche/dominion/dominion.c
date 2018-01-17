@@ -752,6 +752,7 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
       return -1;
 			
     case mine:
+	    cardEffectStatus = mineEffect(state);
       j = state->hand[currentPlayer][choice1];  //store card we will trash
 
       if (state->hand[currentPlayer][choice1] < copper || state->hand[currentPlayer][choice1] > gold)
@@ -787,6 +788,7 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
       return 0;
 			
     case remodel:
+	    cardEffectStatus = remodelEffect(state);
       j = state->hand[currentPlayer][choice1];  //store card we will trash
 
       if ( (getCost(state->hand[currentPlayer][choice1]) + 2) > getCost(choice2) )
@@ -813,6 +815,7 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
       return 0;
 		
     case smithy:
+	    cardEffectStatus = smithyEffect(state);
       //+3 Cards
       for (i = 0; i < 3; i++)
 	{
@@ -1123,6 +1126,7 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
 
 		
     case embargo: 
+	    cardEffectStatus = embargoEffect(state);
       //+2 Coins
       state->coins = state->coins + 2;
 			
@@ -1236,6 +1240,26 @@ int adventurerEffect(struct gameState *state)
 		state->discard[currentPlayer][state->discardCount[currentPlayer]++]=temphand[z-1]; // discard all cards in play that have been drawn
 		z=z-1;
 	}
+	return 0;
+}
+
+int mineEffect(struct gameState *state)
+{
+	return 0;
+}
+
+int remodelEffect(struct gameState *state)
+{
+	return 0;
+}
+
+int smithyEffect(struct gameState *state)
+{
+	return 0;
+}
+
+int embargoEffect(struct gameState *state)
+{
 	return 0;
 }
 

@@ -12,7 +12,7 @@ int getCost(int cardNumber);
 int cardEffect(int card, int choice1, int choice2, int choice3, 
 	       struct gameState *state, int handPos, int *bonus);
 int adventurerEffect(struct gameState *state);
-int mineEffect(struct gameState *state);
+int mineEffect(int choice1, int choice2, struct gameState *state, int handPos);
 int remodelEffect(struct gameState *state);
 int smithyEffect(struct gameState *state);
 int embargoEffect(struct gameState *state);

@@ -652,12 +652,9 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
   int index;
   int currentPlayer = whoseTurn(state);
   int nextPlayer = currentPlayer + 1;
-
-  int tributeRevealedCards[2] = {-1, -1};
-  int temphand[MAX_HAND];// moved above the if statement
-  int drawntreasure=0;
-  int cardDrawn;
+  int tempHand[MAX_HAND];	//  This is only used for the feast card
   int z = 0;// this is the counter for the temp hand
+  int tributeRevealedCards[2] = {-1, -1};
   int cardEffectStatus;	// used in the various card functions to reflect success or failure
   if (nextPlayer > (state->numPlayers - 1)){
     nextPlayer = 0;
@@ -699,7 +696,7 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
       //gain card with cost up to 5
       //Backup hand
       for (i = 0; i <= state->handCount[currentPlayer]; i++){
-	temphand[i] = state->hand[currentPlayer][i];//Backup card
+	tempHand[i] = state->hand[currentPlayer][i];//Backup card
 	state->hand[currentPlayer][i] = -1;//Set to nothing
       }
       //Backup hand
@@ -741,8 +738,8 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
 
       //Reset Hand
       for (i = 0; i <= state->handCount[currentPlayer]; i++){
-	state->hand[currentPlayer][i] = temphand[i];
-	temphand[i] = -1;
+	state->hand[currentPlayer][i] = tempHand[i];
+	tempHand[i] = -1;
       }
       //Reset Hand
       			
@@ -752,40 +749,8 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
       return -1;
 			
     case mine:
-	    cardEffectStatus = mineEffect(state);
-      j = state->hand[currentPlayer][choice1];  //store card we will trash
-
-      if (state->hand[currentPlayer][choice1] < copper || state->hand[currentPlayer][choice1] > gold)
-	{
-	  return -1;
-	}
-		
-      if (choice2 > treasure_map || choice2 < curse)
-	{
-	  return -1;
-	}
-
-      if ( (getCost(state->hand[currentPlayer][choice1]) + 3) > getCost(choice2) )
-	{
-	  return -1;
-	}
-
-      gainCard(choice2, state, 2, currentPlayer);
-
-      //discard card from hand
-      discardCard(handPos, currentPlayer, state, 0);
-
-      //discard trashed card
-      for (i = 0; i < state->handCount[currentPlayer]; i++)
-	{
-	  if (state->hand[currentPlayer][i] == j)
-	    {
-	      discardCard(i, currentPlayer, state, 0);			
-	      break;
-	    }
-	}
-			
-      return 0;
+	    cardEffectStatus = mineEffect(choice1, choice2, state, handPos);
+	    return cardEffectStatus;
 			
     case remodel:
 	    cardEffectStatus = remodelEffect(state);
@@ -1221,30 +1186,71 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
 //  it as it was written in the original cardEffect switch statement.
 int adventurerEffect(struct gameState *state)
 {
-	printf("inside adenturerEffect\n");
-	while(drawntreasure<2){
+  	int tempHand[MAX_HAND];
+  	int z = 0;// this is the counter for the temp hand
+  	int drawnTreasure=0;
+	int currentPlayer = whoseTurn(state);
+  	int cardDrawn;
+	while(drawnTreasure<2){
 		if (state->deckCount[currentPlayer] <1){//if the deck is empty we need to shuffle discard and add to deck
 			shuffle(currentPlayer, state);
 		}
 		drawCard(currentPlayer, state);
 		cardDrawn = state->hand[currentPlayer][state->handCount[currentPlayer]-1];//top card of hand is most recently drawn card.
 		if (cardDrawn == copper || cardDrawn == silver || cardDrawn == gold)
-			drawntreasure++;
+			drawnTreasure++;
 		else{
-			temphand[z]=cardDrawn;
+			tempHand[z]=cardDrawn;
 			state->handCount[currentPlayer]--; //this should just remove the top card (the most recently drawn one).
 			z++;
 		}
 	}
 	while(z-1>=0){
-		state->discard[currentPlayer][state->discardCount[currentPlayer]++]=temphand[z-1]; // discard all cards in play that have been drawn
+		state->discard[currentPlayer][state->discardCount[currentPlayer]++]=tempHand[z-1]; // discard all cards in play that have been drawn
 		z=z-1;
 	}
 	return 0;
 }
 
-int mineEffect(struct gameState *state)
+//  Allows you to upgrade a money card from your hand, to the next higher
+//  grade of coin.  And you can put your upgraded money card into your
+//  hand, not into the discard as is normally done.
+int mineEffect(int choice1, int choice2, struct gameState *state, int handPos)
 {
+	int currentPlayer = whoseTurn(state);
+	int j = state->hand[currentPlayer][choice1];  //store card we will trash
+	int i;
+
+	if (state->hand[currentPlayer][choice1] < copper || state->hand[currentPlayer][choice1] > gold)
+	{
+		return -1;
+	}
+
+	if (choice2 > treasure_map || choice2 < curse)
+	{
+		return -1;
+	}
+
+	if ( (getCost(state->hand[currentPlayer][choice1]) + 3) > getCost(choice2) )
+	{
+		return -1;
+	}
+
+	gainCard(choice2, state, 2, currentPlayer);
+
+	//discard card from hand
+	discardCard(handPos, currentPlayer, state, 0);
+
+	//discard trashed card
+	for (i = 0; i < state->handCount[currentPlayer]; i++)
+	{
+		if (state->hand[currentPlayer][i] == j)
+		{
+			discardCard(i, currentPlayer, state, 0);			
+			break;
+		}
+	}
+
 	return 0;
 }
 

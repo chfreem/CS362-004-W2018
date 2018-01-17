@@ -757,16 +757,8 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
 	    return cardEffectStatus;
 		
     case smithy:
-	    cardEffectStatus = smithyEffect(state);
-      //+3 Cards
-      for (i = 0; i < 3; i++)
-	{
-	  drawCard(currentPlayer, state);
-	}
-			
-      //discard card from hand
-      discardCard(handPos, currentPlayer, state, 0);
-      return 0;
+	    cardEffectStatus = smithyEffect(state, handPos);
+	    return cardEffectStatus;
 		
     case village:
       //+1 Card
@@ -1231,6 +1223,9 @@ int mineEffect(int choice1, int choice2, struct gameState *state, int handPos)
 	return 0;
 }
 
+//  Allows you to upgrade a card in your hand.  Choose a card in your hand to trash.
+//  Then gain a card (put it in your discard pile) that is worth 0, 1, or 2
+//  coins more than the card you trashed.
 int remodelEffect(int choice1, int choice2, struct gameState *state, int handPos)
 {
 	int currentPlayer = whoseTurn(state);
@@ -1261,8 +1256,18 @@ int remodelEffect(int choice1, int choice2, struct gameState *state, int handPos
 	return 0;
 }
 
-int smithyEffect(struct gameState *state)
+int smithyEffect(struct gameState *state, int handPos)
 {
+	int currentPlayer = whoseTurn(state);
+	int i;
+	//+3 Cards
+	for (i = 0; i < 3; i++)
+	{
+		drawCard(currentPlayer, state);
+	}
+
+	//discard card from hand
+	discardCard(handPos, currentPlayer, state, 0);
 	return 0;
 }
 

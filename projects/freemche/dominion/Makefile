@@ -6,8 +6,8 @@ rngs.o: rngs.h rngs.c
 dominion.o: dominion.h dominion.c rngs.o
 	gcc -c dominion.c -g  $(CFLAGS)
 
-myAssert.o: myAssert.h myAssert.c
-	gcc -c myAssert.c -g $(CFLAGS)
+testingHelpers.o: testingHelpers.h testingHelpers.c
+	gcc -c testingHelpers.c -g $(CFLAGS)
 
 playdom: dominion.o playdom.c
 	gcc -o playdom playdom.c -g dominion.o rngs.o $(CFLAGS)
@@ -32,13 +32,21 @@ runtests: testDrawCard
 	gcov dominion.c >> unittestresult.out
 	cat dominion.c.gcov >> unittestresult.out
 
-unittest1: unittest1.c dominion.o rngs.o myAssert.o
-	gcc -o unittest1 -g unittest1.c dominion.o rngs.o myAssert.o $(CFLAGS)
+unittest1: unittest1.c dominion.o rngs.o testingHelpers.o
+	gcc -o unittest1 -g unittest1.c dominion.o rngs.o testingHelpers.o $(CFLAGS)
 
 player: player.c interface.o
 	gcc -o player player.c -g  dominion.o rngs.o interface.o $(CFLAGS)
 
 all: playdom player testDrawCard testBuyCard badTestDrawCard unittest1
 
+unittestresults.out: unittest1.c dominion.c rngs.c testingHelpers.c
+	echo "Result for running unit tests:" > unittestresults.out
+
+	echo "unittest1.c:" >> unittestresults.out
+	gcc -o unittest1 unittest1.c dominion.o rngs.o testingHelpers.o $(CFLAGS)
+	unittest1 >> unittestresults.out
+	gcov dominion.c >> unittestresults.out
+
 clean:
-	rm -f *.o playdom.exe playdom player player.exe  *.gcov *.gcda *.gcno *.so *.out testDrawCard testDrawCard.exe
+	rm -f *.o playdom.exe playdom player player.exe  *.gcov *.gcda *.gcno *.so *.out testDrawCard testDrawCard.exe unittest1 *.out badTestDrawCard

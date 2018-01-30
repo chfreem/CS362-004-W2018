@@ -15,24 +15,27 @@
 #include "dominion_helpers.h"
 #include <string.h>
 #include <stdio.h>
-#include "myAssert.h"
+#include "testingHelpers.h"
 #include "rngs.h"
 
 int main()
 {
 	int i;		//  loop counter
 	int seed = 20;	//  for random function
-	int numPlayers = 2;	//  we'll test for up to this number of players
+	int maxNumPlayers = 2;	//  we'll test for up to this number of players
 	int negativePlayers = -1;	//  This ought to break the function
 	int player;	//  loop counter
 	int tooBigDeckSize = MAX_DECK + 1;
 	int negativeDeckSize = -1;
 	int numCardsInDeck;
+	int result;	//  for storing the result of initializeGame()
 
 	//  I'm using the same cards as in playdom.c
 	int k[10] = {adventurer, gardens, embargo, village, minion, mine,
 			cutpurse, sea_hag, tribute, smithy};
 	struct gameState currentState;
+	struct gameState storedState;	//  For comparison to see if changes
+					//  were made
 
 	//  I'm going to test the shuffling function when the player's
 	//  entire deck is full of identical cards
@@ -50,17 +53,21 @@ int main()
 		differentCards[i] = i;
 	}
 
-	for (p = negativePlayers; p < numPlayers; p++)
+	for (player = negativePlayers; player < maxNumPlayers; player++)
 	{
 		for  (numCardsInDeck = negativeDeckSize;
 			numCardsInDeck < tooBigDeckSize;
 			numCardsInDeck++)
 		{
-			printf("Test player %d with %d cards:  \n", p, numCardsInDeck);
+			printf("Test player %d with %d cards:  \n", player, numCardsInDeck);
 
-			//  Clear out the previous game state
+			//  Clear out the previous game state and stored state
 			memset(&currentState, '\0', sizeof(struct gameState));
-			initialize
+			memset(&storedState, '\0', sizeof(struct gameState));
+			result = initializeGame(player, k, seed, &currentState); 
+			copyGame(&currentState, &storedState);
+		}
+	}
 
 	myAssert(2, 1, "firstNum", "secondNum");
 

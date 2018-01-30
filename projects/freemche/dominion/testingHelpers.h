@@ -8,4 +8,6 @@ void myAssert(int conditionA, int conditionB,
 		char* condATitle, char* condBTitle);
 
 void copyGame(struct gameState *oldGame, struct gameState *newGame);
+
+void checkStateDifferences(struct gameState *oldGame, struct gameState *newGame);
 #endif

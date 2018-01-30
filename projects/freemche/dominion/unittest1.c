@@ -23,9 +23,9 @@ int main()
 	int i;		//  loop counter
 	int seed = 20;	//  for random function
 	int maxNumPlayers = 2;	//  we'll test for up to this number of players
-	int negativePlayers = -1;	//  This ought to break the function
 	int player;	//  loop counter
-	int tooBigDeckSize = MAX_DECK + 1;
+//	int tooBigDeckSize = MAX_DECK + 1;
+	int tooBigDeckSize = 10;
 	int negativeDeckSize = -1;
 	int numCardsInDeck;
 	int result;	//  for storing the result of initializeGame()
@@ -53,7 +53,7 @@ int main()
 		differentCards[i] = i;
 	}
 
-	for (player = negativePlayers; player < maxNumPlayers; player++)
+	for (player = 0; player < maxNumPlayers; player++)
 	{
 		for  (numCardsInDeck = negativeDeckSize;
 			numCardsInDeck < tooBigDeckSize;
@@ -64,8 +64,20 @@ int main()
 			//  Clear out the previous game state and stored state
 			memset(&currentState, '\0', sizeof(struct gameState));
 			memset(&storedState, '\0', sizeof(struct gameState));
-			result = initializeGame(player, k, seed, &currentState); 
-			copyGame(&currentState, &storedState);
+			result = initializeGame(maxNumPlayers, k, seed, &currentState); 
+			if (result >= 0)
+			{
+				copyGame(&currentState, &storedState);
+			}
+
+			//  Now we're ready to check the shuffle() function
+			result = shuffle(player, &currentState);
+			if (result >= 0)
+			{
+				//  Shuffling was successful
+				checkStateDifferences(&currentState, &storedState);
+			}
+
 		}
 	}
 

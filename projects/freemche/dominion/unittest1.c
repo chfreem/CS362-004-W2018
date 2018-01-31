@@ -36,7 +36,7 @@ int main()
 	struct gameState currentState;
 	struct gameState storedState;	//  For comparison to see if changes
 					//  were made
-
+	int checkFlags[] = {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1};
 	//  I'm going to test the shuffling function when the player's
 	//  entire deck is full of identical cards
 	int identicalCards[MAX_DECK];
@@ -75,7 +75,22 @@ int main()
 			if (result >= 0)
 			{
 				//  Shuffling was successful
-				checkStateDifferences(&currentState, &storedState);
+				for (i=0; i<numCardsInDeck; i++)
+				{
+					printf("%d ", currentState.deck[player][i]);
+				}
+				printf("\n");
+				for (i=0; i<numCardsInDeck; i++)
+				{
+					printf("%d ", storedState.deck[player][i]);
+				}
+				printf("\n");
+				checkStateDifferences(&currentState, &storedState,
+						checkFlags);
+			}
+			else
+			{
+				printf("shuffling wasn't successful.");
 			}
 
 		}

@@ -205,6 +205,14 @@ int shuffle(int player, struct gameState *state) {
   int newDeckPos = 0;
   int card;
   int i;
+    if (DEBUG){//Debug statements
+	    printf("Deck before shuffling:\n");
+	    for (i=0; i< state->deckCount[player]; i++)
+	    {
+		    printf("%d ", state->deck[player][i]);
+	    }
+	    printf("\n");
+    }
 
   if (state->deckCount[player] < 1)
     return -1;
@@ -225,6 +233,14 @@ int shuffle(int player, struct gameState *state) {
     state->deckCount[player]++;
   }
 
+    if (DEBUG){//Debug statements
+	    printf("Deck after shuffling:\n");
+	    for (i=0; i< state->deckCount[player]; i++)
+	    {
+		    printf("%d ", state->deck[player][i]);
+	    }
+	    printf("\n");
+    }
   return 0;
 }
 
@@ -540,6 +556,7 @@ int drawCard(int player, struct gameState *state)
 
     //Shufffle the deck
     shuffle(player, state);//Shuffle the deck up and make it so that we can draw
+
    
     if (DEBUG){//Debug statements
       printf("Deck count now: %d\n", state->deckCount[player]);

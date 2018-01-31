@@ -9,5 +9,7 @@ void myAssert(int conditionA, int conditionB,
 
 void copyGame(struct gameState *oldGame, struct gameState *newGame);
 
-void checkStateDifferences(struct gameState *oldGame, struct gameState *newGame);
+void checkStateDifferences(struct gameState *oldGame, 
+		struct gameState *newGame, 
+		int checkMemberFlags[NUM_GAMESTATE_MEMBERS]);
 #endif

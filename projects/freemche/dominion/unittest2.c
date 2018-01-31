@@ -139,5 +139,39 @@ int main()
 		printf("buyCard() returned successfully when it");
 		printf(" should have failed because I didn't have enough money\n");
 	}
+	
+
+
+	//  Test # 4
+	printf("Trying to buy a card that doesn't exist:\n");	
+	memset(&currentState, '\0', sizeof(struct gameState));
+	memset(&storedState, '\0', sizeof(struct gameState));
+	result = initializeGame(numPlayers, k, seed, &currentState); 
+	if (result < 0)
+	{
+		printf("Game initialization not successful.\n");
+		return -1;
+	}
+
+	//  Now we want to change the game state for
+	//  our testing conditions
+	currentState.coins= 2;
+	copyGame(&currentState, &storedState);
+
+	//  Ready to test!
+	result = buyCard(82, &currentState);
+	if (result < 0)
+	{
+		checkStateDifferences(&currentState, &storedState,
+				checkFlags);
+		printf("Unable to buy non-existent card.  PASSED.\n");
+	}
+	else
+	{
+		checkStateDifferences(&currentState, &storedState,
+				checkFlags);
+		printf("buyCard() returned successfully when it");
+		printf(" should have failed because desired card is nonexistant\n");
+	}
 	return 0;
 }

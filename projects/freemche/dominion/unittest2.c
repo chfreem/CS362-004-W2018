@@ -74,5 +74,37 @@ int main()
 		printf("buyCard() returned successfully when it");
 		printf(" should have failed because numBuys = 0\n");
 	}
+	
+	
+	//  Test # 2:  player wants to buy a card that has run out
+	printf("Trying to buy a card that has run out:\n");	
+	memset(&currentState, '\0', sizeof(struct gameState));
+	memset(&storedState, '\0', sizeof(struct gameState));
+	result = initializeGame(numPlayers, k, seed, &currentState); 
+	if (result < 0)
+	{
+		printf("Game initialization not successful.\n");
+		return -1;
+	}
+
+	//  Now we want to change the game state for
+	//  our testing conditions
+	//  I'll say that there are no duchy cards left
+	currentState.supplyCount[2] = 0;
+	copyGame(&currentState, &storedState);
+
+	//  Ready to test!
+	result = buyCard(2, &currentState);
+	if (result < 0)
+	{
+		checkStateDifferences(&currentState, &storedState,
+				checkFlags);
+		printf("Unable to buy when quantity desired card = 0.  PASSED.\n");
+	}
+	else
+	{
+		printf("buyCard() returned successfully when it");
+		printf(" should have failed because qty desired card = 0\n");
+	}
 	return 0;
 }

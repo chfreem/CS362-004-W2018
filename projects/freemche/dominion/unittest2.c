@@ -90,7 +90,7 @@ int main()
 	//  Now we want to change the game state for
 	//  our testing conditions
 	//  I'll say that there are no duchy cards left
-	currentState.supplyCount[2] = 0;
+	currentState.supplyCount[duchy] = 0;
 	copyGame(&currentState, &storedState);
 
 	//  Ready to test!
@@ -127,7 +127,7 @@ int main()
 
 	//  Ready to test!  I'm going to try to buy a duchy card,
 	//  which costs 5, when I only have 2 coins.
-	result = buyCard(2, &currentState);
+	result = buyCard(duchy, &currentState);
 	if (result < 0)
 	{
 		checkStateDifferences(&currentState, &storedState,
@@ -194,7 +194,7 @@ int main()
 	copyGame(&currentState, &storedState);
 
 	//  Ready to test!  I'll try to buy a duchy card.
-	result = buyCard(2, &currentState);
+	result = buyCard(duchy, &currentState);
 	if (result < 0)
 	{
 		checkStateDifferences(&currentState, &storedState,
@@ -207,6 +207,41 @@ int main()
 				checkFlags);
 		printf("buyCard() returned successfully when it");
 		printf(" should have failed because I'm not in buy phase\n");
+	}
+	
+
+
+	//  Test # 6
+	printf("Trying to buy a card not used in this game:\n");	
+	memset(&currentState, '\0', sizeof(struct gameState));
+	memset(&storedState, '\0', sizeof(struct gameState));
+	result = initializeGame(numPlayers, k, seed, &currentState); 
+	if (result < 0)
+	{
+		printf("Game initialization not successful.\n");
+		return -1;
+	}
+
+	//  Now we want to change the game state for
+	//  our testing conditions
+	currentState.coins= 5;
+	currentState.phase = 2;		//  clean-up phase
+	copyGame(&currentState, &storedState);
+
+	//  Ready to test!
+	result = buyCard(remodel, &currentState);
+	if (result < 0)
+	{
+		checkStateDifferences(&currentState, &storedState,
+				checkFlags);
+		printf("Unable to buy card not used in this game.  PASSED.\n");
+	}
+	else
+	{
+		checkStateDifferences(&currentState, &storedState,
+				checkFlags);
+		printf("buyCard() returned successfully when it");
+		printf(" should have failed because card not used in this game\n");
 	}
 	return 0;
 }

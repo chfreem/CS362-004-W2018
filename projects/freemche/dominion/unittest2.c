@@ -173,5 +173,40 @@ int main()
 		printf("buyCard() returned successfully when it");
 		printf(" should have failed because desired card is nonexistant\n");
 	}
+	
+
+
+	//  Test # 5
+	printf("Trying to buy a card when in clean-up phase:\n");	
+	memset(&currentState, '\0', sizeof(struct gameState));
+	memset(&storedState, '\0', sizeof(struct gameState));
+	result = initializeGame(numPlayers, k, seed, &currentState); 
+	if (result < 0)
+	{
+		printf("Game initialization not successful.\n");
+		return -1;
+	}
+
+	//  Now we want to change the game state for
+	//  our testing conditions
+	currentState.coins= 5;
+	currentState.phase = 2;		//  clean-up phase
+	copyGame(&currentState, &storedState);
+
+	//  Ready to test!  I'll try to buy a duchy card.
+	result = buyCard(2, &currentState);
+	if (result < 0)
+	{
+		checkStateDifferences(&currentState, &storedState,
+				checkFlags);
+		printf("Unable to buy card when in clean-up phase.  PASSED.\n");
+	}
+	else
+	{
+		checkStateDifferences(&currentState, &storedState,
+				checkFlags);
+		printf("buyCard() returned successfully when it");
+		printf(" should have failed because I'm not in buy phase\n");
+	}
 	return 0;
 }

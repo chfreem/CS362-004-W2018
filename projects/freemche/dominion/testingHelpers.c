@@ -246,11 +246,11 @@ void countCardTypes(int* cardTypeTotals, struct gameState *state, int player)
 	int j;
 	for (i=0; i< treasure_map + 1; i++)	//  For each type of card
 	{
-		printf("i=%d\n", i);
+//		printf("i=%d\n", i);
 		cardTypeTotals[i] = 0;
 		for (j = 0; j < state->deckCount[player]; j++)	//  For each card in the deck
 		{
-			printf("j=%d, deck[j]=%d\n", j, state->deck[player][j]);
+//			printf("j=%d, deck[j]=%d\n", j, state->deck[player][j]);
 			if (state->deck[player][j] == i)
 			{
 				cardTypeTotals[i]++;

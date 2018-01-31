@@ -12,4 +12,8 @@ void copyGame(struct gameState *oldGame, struct gameState *newGame);
 void checkStateDifferences(struct gameState *oldGame, 
 		struct gameState *newGame, 
 		int checkMemberFlags[NUM_GAMESTATE_MEMBERS]);
+
+int changed(int old, int new);
+
+void countCardTypes(int* cardTypeTotals, struct gameState *state, int player);
 #endif

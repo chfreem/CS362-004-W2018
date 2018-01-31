@@ -36,7 +36,12 @@ int main()
 	struct gameState currentState;
 	struct gameState storedState;	//  For comparison to see if changes
 					//  were made
-	int checkFlags[] = {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1};
+	//  The following array tells the checkStateDifferences()
+	//  function which components of the game state should be
+	//  checked.  In this case, we don't want to check the
+	//  deck (we know it has changed from the shuffling, and
+	//  we'll check it more specifically below).
+	int checkFlags[] = {1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1};
 	//  I'm going to test the shuffling function when the player's
 	//  entire deck is full of identical cards
 	int identicalCards[MAX_DECK];
@@ -65,11 +70,14 @@ int main()
 			memset(&currentState, '\0', sizeof(struct gameState));
 			memset(&storedState, '\0', sizeof(struct gameState));
 			result = initializeGame(maxNumPlayers, k, seed, &currentState); 
-			if (result >= 0)
+			if (result < 0)
 			{
-				copyGame(&currentState, &storedState);
+				printf("Game initialization not successful.\n");
+				break;
 			}
 
+			currentState.deckCount[player] = numCardsInDeck;
+			copyGame(&currentState, &storedState);
 			//  Now we're ready to check the shuffle() function
 			result = shuffle(player, &currentState);
 			if (result >= 0)
@@ -85,18 +93,34 @@ int main()
 					printf("%d ", storedState.deck[player][i]);
 				}
 				printf("\n");
+				//  First, we'll check if any components of the game
+				//  state were modified, other than the shuffled
+				//  deck.  If so, there will be a report printed to
+				//  the screen telling us more info.
 				checkStateDifferences(&currentState, &storedState,
 						checkFlags);
+
+				//  Next, we want to count how many of each type
+				//  of card were in the deck before the shuffle,
+				//  and how many are in the deck after the shuffle.
+				int cardTypeTotals[treasure_map+1];
+				memset(&cardTypeTotals, '\0', sizeof(int));
+//				countCardTypes(cardTypeTotals, storedState.deck[player][i], storedState.deckCount);
+				countCardTypes(cardTypeTotals, &storedState, player);
+				int b;
+				for (b=0; b<treasure_map+1; b++)
+				{
+					printf("%d ", cardTypeTotals[b]);
+				}
+				printf("\n");
 			}
 			else
 			{
-				printf("shuffling wasn't successful.");
+				printf("shuffling wasn't successful.\n");
 			}
 
 		}
 	}
-
-	myAssert(2, 1, "firstNum", "secondNum");
 
 	return 0;
 }

@@ -35,18 +35,26 @@ runtests: testDrawCard
 unittest1: unittest1.c dominion.o rngs.o testingHelpers.o
 	gcc -o unittest1 -g unittest1.c dominion.o rngs.o testingHelpers.o $(CFLAGS)
 
+unittest2: unittest2.c dominion.o rngs.o testingHelpers.o
+	gcc -o unittest2 -g unittest2.c dominion.o rngs.o testingHelpers.o $(CFLAGS)
+
 player: player.c interface.o
 	gcc -o player player.c -g  dominion.o rngs.o interface.o $(CFLAGS)
 
-all: playdom player testDrawCard testBuyCard badTestDrawCard unittest1
+all: playdom player testDrawCard testBuyCard badTestDrawCard unittest1 unittest2
 
-unittestresults.out: unittest1.c dominion.c rngs.c testingHelpers.c
+unittestresults.out: unittest1.c unittest2.c dominion.c rngs.c testingHelpers.c
 	echo "Result for running unit tests:" > unittestresults.out
 
-	echo "unittest1.c:" >> unittestresults.out
+	echo "unittest1.c:  If problems are not reported, the test is successful" >> unittestresults.out
 	gcc -o unittest1 unittest1.c dominion.o rngs.o testingHelpers.o $(CFLAGS)
 	unittest1 >> unittestresults.out
 	gcov dominion.c >> unittestresults.out
 
+	echo "unittest2.c:  If problems are not reported, the test is successful" >> unittestresults.out
+	gcc -o unittest2 unittest2.c dominion.o rngs.o testingHelpers.o $(CFLAGS)
+	unittest2 >> unittestresults.out
+	gcov dominion.c >> unittestresults.out
+
 clean:
-	rm -f *.o playdom.exe playdom player player.exe  *.gcov *.gcda *.gcno *.so *.out testDrawCard testDrawCard.exe unittest1 *.out badTestDrawCard
+	rm -f *.o playdom.exe playdom player player.exe  *.gcov *.gcda *.gcno *.so *.out testDrawCard testDrawCard.exe unittest1 unittest2 *.out badTestDrawCard

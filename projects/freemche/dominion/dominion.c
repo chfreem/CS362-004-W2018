@@ -1163,18 +1163,25 @@ int adventurerEffect(struct gameState *state)
   	int drawnTreasure=0;
 	int currentPlayer = whoseTurn(state);
   	int cardDrawn;
+//	printf("deckCount is %d\n", state->deckCount[currentPlayer]);
 	while(drawnTreasure<2){
 		if (state->deckCount[currentPlayer] <1){//if the deck is empty we need to shuffle discard and add to deck
+//			printf("deck is empty, we need to shuffle.\n");
 			shuffle(currentPlayer, state);
 		}
+//		printf("drawing card now.\n");
 		drawCard(currentPlayer, state);
 		cardDrawn = state->hand[currentPlayer][state->handCount[currentPlayer]-1];//top card of hand is most recently drawn card.
+//		printf("card drawn is %d\n", cardDrawn);
 		if (cardDrawn == copper || cardDrawn == silver || cardDrawn == gold)
 			drawnTreasure++;
 		else{
+//			printf("card we drew was not a treasure card.\n");
 			z++;
+//			printf("z = %d\n", z);
 			tempHand[z]=cardDrawn;
 			state->handCount[currentPlayer]--; //this should just remove the top card (the most recently drawn one).
+//			printf("handCount is now %d\n", state->handCount[currentPlayer]);
 			//Original location:  z++;
 		}
 	}

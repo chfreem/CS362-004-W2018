@@ -120,5 +120,29 @@ int main()
 	result = isGameOver(&currentState);
 	checkStateDifferences(&storedState, &currentState, checkFlags);
 	myAssert(1, result,"isGameOver");
+	
+
+	//  Test #4
+	printf("\nThe last 2 supply cards checked are gone\n");
+	memset(&currentState, '\0', sizeof(struct gameState));
+	memset(&storedState, '\0', sizeof(struct gameState));
+	result = initializeGame(numPlayers, k, seed, &currentState); 
+	if (result < 0)
+	{
+		printf("Game initialization not successful.\n");
+		return -1;
+	}
+
+	//  Now we want to change the game state for
+	//  our testing conditions
+	currentState.supplyCount[province] = 10;
+	currentState.supplyCount[sea_hag] = 0;
+	currentState.supplyCount[embargo] = 0;
+	copyGame(&currentState, &storedState);
+
+	//  Ready to test!
+	result = isGameOver(&currentState);
+	checkStateDifferences(&storedState, &currentState, checkFlags);
+	myAssert(0, result,"isGameOver");
 	return 0;
 }

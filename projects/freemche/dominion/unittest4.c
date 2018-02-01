@@ -11,9 +11,9 @@
 //  The tests I plan on running for isGameOver()  are:
 //  1--0 province cards
 //  --nonzero province cards and...
-//  3--every supply card is gone
-//  4--the last 3 supply cards checked are gone
-//  5--the last 2 supply cards checked are gone
+//  2--every supply card is gone
+//  3--the last 3 supply cards checked are gone
+//  4--the last 2 supply cards checked are gone
 //  ***********************************************************************  //
 #include "dominion.h"
 #include "dominion_helpers.h"
@@ -89,6 +89,31 @@ int main()
 			}
 		}
 	}
+	copyGame(&currentState, &storedState);
+
+	//  Ready to test!
+	result = isGameOver(&currentState);
+	checkStateDifferences(&storedState, &currentState, checkFlags);
+	myAssert(1, result,"isGameOver");
+	
+
+	//  Test #3
+	printf("\nThe last 3 supply cards checked are gone\n");
+	memset(&currentState, '\0', sizeof(struct gameState));
+	memset(&storedState, '\0', sizeof(struct gameState));
+	result = initializeGame(numPlayers, k, seed, &currentState); 
+	if (result < 0)
+	{
+		printf("Game initialization not successful.\n");
+		return -1;
+	}
+
+	//  Now we want to change the game state for
+	//  our testing conditions
+	currentState.supplyCount[province] = 10;
+	currentState.supplyCount[sea_hag] = 0;
+	currentState.supplyCount[embargo] = 0;
+	currentState.supplyCount[cutpurse] = 0;
 	copyGame(&currentState, &storedState);
 
 	//  Ready to test!

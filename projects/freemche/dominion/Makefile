@@ -52,17 +52,17 @@ unittestresults.out: unittest1.c unittest2.c unittest3.c  dominion.c rngs.c test
 	echo "unittest1.c:  If problems are not reported, the test is successful" >> unittestresults.out
 	gcc -o unittest1 unittest1.c dominion.o rngs.o testingHelpers.o $(CFLAGS)
 	unittest1 >> unittestresults.out
-	gcov dominion.c >> unittestresults.out
+	gcov unittest1 dominion.c >> unittestresults.out
 
 	echo "unittest2.c:  If problems are not reported, the test is successful" >> unittestresults.out
 	gcc -o unittest2 unittest2.c dominion.o rngs.o testingHelpers.o $(CFLAGS)
 	unittest2 >> unittestresults.out
-	gcov dominion.c >> unittestresults.out
+	gcov unittest2 dominion.c >> unittestresults.out
 
 	echo "unittest3.c:  If problems are not reported, the test is successful" >> unittestresults.out
 	gcc -o unittest3 unittest3.c dominion.o rngs.o testingHelpers.o $(CFLAGS)
 	unittest3 >> unittestresults.out
-	gcov dominion.c >> unittestresults.out
+	gcov unittest3 dominion.c >> unittestresults.out
 
 clean:
 	rm -f *.o playdom.exe playdom player player.exe  *.gcov *.gcda *.gcno *.so *.out testDrawCard testDrawCard.exe unittest1 unittest2 unittest3 *.out badTestDrawCard

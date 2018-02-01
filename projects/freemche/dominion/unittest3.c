@@ -273,5 +273,65 @@ int main()
 	result = fullDeckCount(player, cardToCount, &currentState);
 	checkStateDifferences(&storedState, &currentState, checkFlags);
 	myAssert(result, 30, "copper Count");
+
+
+	//  Test #10
+	printf("\nTesting for loop coverage.  Multiple loops\n");
+	printf("already completed.  Checking for 0 executions and 1 execution\n");
+	memset(&currentState, '\0', sizeof(struct gameState));
+	memset(&storedState, '\0', sizeof(struct gameState));
+	result = initializeGame(numPlayers, k, seed, &currentState); 
+	if (result < 0)
+	{
+		printf("Game initialization not successful.\n");
+		return -1;
+	}
+
+	//  Now we want to change the game state for
+	//  our testing conditions
+	cardToCount = copper;
+	player = 0;
+	currentState.deckCount[player] = 1;
+	currentState.handCount[player] = 1;
+	currentState.discardCount[player] = 1;
+	for (i=0; i< currentState.deckCount[player]; i++)
+	{
+		currentState.deck[player][i] = copper;
+	}
+	for (i=0; i< currentState.handCount[player]; i++)
+	{
+		currentState.hand[player][i] = copper;
+	}
+	for (i=0; i< currentState.discardCount[player]; i++)
+	{
+		currentState.discard[player][i] = copper;
+	}
+	copyGame(&currentState, &storedState);
+
+	//  Ready to test!
+	result = fullDeckCount(player, cardToCount, &currentState);
+	checkStateDifferences(&storedState, &currentState, checkFlags);
+	myAssert(result, 3, "copper Count");
+	currentState.deckCount[player] = 0;
+	currentState.handCount[player] = 0;
+	currentState.discardCount[player] = 0;
+	for (i=0; i< currentState.deckCount[player]; i++)
+	{
+		currentState.deck[player][i] = copper;
+	}
+	for (i=0; i< currentState.handCount[player]; i++)
+	{
+		currentState.hand[player][i] = copper;
+	}
+	for (i=0; i< currentState.discardCount[player]; i++)
+	{
+		currentState.discard[player][i] = copper;
+	}
+	copyGame(&currentState, &storedState);
+
+	//  Ready to test!
+	result = fullDeckCount(player, cardToCount, &currentState);
+	checkStateDifferences(&storedState, &currentState, checkFlags);
+	myAssert(result, 0, "copper Count");
 	return 0;
 }

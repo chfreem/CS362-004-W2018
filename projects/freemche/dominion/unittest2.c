@@ -244,70 +244,123 @@ int main()
 	
 
 
-	//  Test # 7
-	printf("Trying to make a legitimate purchase:\n");	
-	memset(&currentState, '\0', sizeof(struct gameState));
-	memset(&storedState, '\0', sizeof(struct gameState));
-	result = initializeGame(numPlayers, k, seed, &currentState); 
-	if (result < 0)
+	//  Test # 7 and #8
+	int embargoTest;
+	for (embargoTest = 0; embargoTest < 2; embargoTest++)
 	{
-		printf("Game initialization not successful.\n");
-		return -1;
-	}
-	int player = currentState.whoseTurn;
-	//  Now we want to change the game state for
-	//  our testing conditions
-	currentState.coins= 5;
-	copyGame(&currentState, &storedState);
+		memset(&currentState, '\0', sizeof(struct gameState));
+		memset(&storedState, '\0', sizeof(struct gameState));
+		result = initializeGame(numPlayers, k, seed, &currentState); 
+		if (embargoTest)
+		{
+			printf("Testing embargo functionality.\n");
+			currentState.embargoTokens[duchy] = 1;
+		}
+		else
+		{
+			printf("Trying to make a legitimate purchase:\n");	
+		}
+		if (result < 0)
+		{
+			printf("Game initialization not successful.\n");
+			return -1;
+		}
+		int player = currentState.whoseTurn;
+		//  Now we want to change the game state for
+		//  our testing conditions
+		currentState.coins= 5;
+		copyGame(&currentState, &storedState);
 
-	//  Ready to test!
-	result = buyCard(duchy, &currentState);
-	if (result < 0)
-	{
-		checkStateDifferences(&currentState, &storedState,
-				checkFlags);
-		printf("Unable to buy card that should've worked.  FAILED.\n");
-	}
-	else
-	{
-		int failed = 0;
-		if (currentState.supplyCount[duchy] != storedState.supplyCount[duchy] - 1)
+		//  Ready to test!
+		result = buyCard(duchy, &currentState);
+		if (result < 0)
 		{
-			printf("buyCard() worked, but did not decrement supplyCount correctly.\n");
-			failed = 1;
+			checkStateDifferences(&currentState, &storedState,
+					checkFlags);
+			printf("Unable to buy card that should've worked.  FAILED.\n");
 		}
-		if (currentState.phase != 1 )
+		else
 		{
-			printf("buyCard() worked, but did not change phase\n");
-			failed = 1;
+			int failed = 0;
+			if (embargoTest)
+			{
+				if ((currentState.supplyCount[duchy] != storedState.supplyCount[duchy] - 1)
+					&& (currentState.supplyCount[curse] != storedState.supplyCount[curse] - 1))
+				{
+					printf("buyCard() worked, but didn't affect supply of curses.\n");
+					failed = 1;
+				}
+			}
+			else
+			{
+				if (currentState.supplyCount[duchy] != storedState.supplyCount[duchy] - 1)
+				{
+					printf("buyCard() worked, but did not decrement supplyCount correctly.\n");
+					failed = 1;
+				}
+			}
+			if (currentState.phase != 1 )
+			{
+				printf("buyCard() worked, but did not change phase\n");
+				failed = 1;
+			}
+			if (currentState.coins != storedState.coins - 5)
+			{
+				printf("buyCard() worked, but did not decrement coins correctly\n");
+				failed = 1;
+			}
+			if (currentState.numBuys != storedState.numBuys - 1)
+			{
+				printf("buyCard() worked, but did not decrement numBuys correctly.\n");
+				failed = 1;
+			}
+			if (embargoTest)
+			{
+				if (currentState.discardCount[player] != storedState.discardCount[player] + 2)
+				{
+					printf("buyCard() worked, but didn't increment discardCount correctly\n");
+					failed = 1;
+				}
+			}
+			else
+			{
+				if (currentState.discardCount[player] != storedState.discardCount[player]+1)
+				{
+					printf("buyCard() worked, but did not increment discardCount correctly\n");
+					failed = 1;
+				}
+			}
+			if (embargoTest)
+			{		
+				if (((currentState.discard[player][currentState.discardCount[player] - 1] != duchy)
+					||
+					(currentState.discard[player][currentState.discardCount[player] - 2] != duchy))
+					&&
+					((currentState.discard[player][currentState.discardCount[player] - 1] != curse)
+					||
+					(currentState.discard[player][currentState.discardCount[player] - 2] != curse)))
+				{
+					printf("buyCard() worked, but didn't add curse and duchy to discard correctly\n");
+					failed = 1;
+				}
+			}
+			else
+			{
+				if (currentState.discard[player][currentState.discardCount[player]-1] != duchy)
+				{
+					printf("buyCard() worked, but did not put duchy at the end of the discard array.\n");
+					failed = 1;
+				}
+			}
+			if (!failed)
+			{
+				printf("buyCard() changed game state correctly. PASSED.\n");
+			}
+			else
+			{
+				printf("FAILED\n");
+			}
 		}
-		if (currentState.coins != storedState.coins - 5)
-		{
-			printf("buyCard() worked, but did not decrement coins correctly\n");
-			failed = 1;
-		}
-		if (currentState.numBuys != storedState.numBuys - 1)
-		{
-			printf("buyCard() worked, but did not decrement numBuys correctly.\n");
-			failed = 1;
-		}
-		if (currentState.discardCount[player] != storedState.discardCount[player]+1)
-		{
-			printf("buyCard() worked, but did not increment discardCount correctly\n");
-			failed = 1;
-		}
-		if (currentState.discard[player][currentState.discardCount[player]-1] != duchy)
-		{
-			printf("buyCard() worked, but did not put duchy at the end of the discard array.\n");
-			failed = 1;
-		}
-		if (!failed)
-		{
-			printf("buyCard() changed game state correctly. PASSED.\n");
-		}
-
-
-
 	}
 	return 0;
 }

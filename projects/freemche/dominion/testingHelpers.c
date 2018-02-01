@@ -2,11 +2,11 @@
 #include <stdio.h>
 
 void myAssert(int conditionA, int conditionB, 
-		char* condATitle, char* condBTitle)
+		char* condTitle)
 {
-	printf("Expected %s = %d, Actual Result %s = %d.  ",
-			condATitle, conditionA,
-			condBTitle, conditionB);
+	printf("Expected %s = %d, Actual Result = %d.  ",
+			condTitle, conditionA,
+			conditionB);
 	if (conditionA == conditionB)
 	{
 		printf("Test PASSED\n");

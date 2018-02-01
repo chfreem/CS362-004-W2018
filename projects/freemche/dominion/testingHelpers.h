@@ -5,7 +5,7 @@
 #include "dominion.h"
 
 void myAssert(int conditionA, int conditionB, 
-		char* condATitle, char* condBTitle);
+		char* condTitle);
 
 void copyGame(struct gameState *oldGame, struct gameState *newGame);
 

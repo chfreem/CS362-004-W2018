@@ -35,6 +35,7 @@ int main()
 	int player;
 	int cardToCount;
 	int result;		//  for storage of function return value
+	int i;
 
 	//  I'm using the same cards as in playdom.c
 	int k[10] = {adventurer, gardens, embargo, village, minion, mine,
@@ -187,7 +188,90 @@ int main()
 	//  Ready to test!
 	result = fullDeckCount(player, cardToCount, &currentState);
 	checkStateDifferences(&storedState, &currentState, checkFlags);
-//	printf("fullDeckCount() returned a count of %d\n", result);
-	myAssert(result, 0, "fullDeckCount", "fullDeckCount");
+	myAssert(result, 0, "fullDeckCount");
+
+
+	//  Test #7
+	printf("\nPlayer has none of card being counted\n");
+	memset(&currentState, '\0', sizeof(struct gameState));
+	memset(&storedState, '\0', sizeof(struct gameState));
+	result = initializeGame(numPlayers, k, seed, &currentState); 
+	if (result < 0)
+	{
+		printf("Game initialization not successful.\n");
+		return -1;
+	}
+
+	//  Now we want to change the game state for
+	//  our testing conditions
+	cardToCount = province;
+	player = 0;
+	copyGame(&currentState, &storedState);
+
+	//  Ready to test!
+	result = fullDeckCount(player, cardToCount, &currentState);
+	checkStateDifferences(&storedState, &currentState, checkFlags);
+	myAssert(result, 0, "fullDeckCount");
+
+
+	//  Test #8
+	printf("\nPlayer has some of the card being counted\n");
+	memset(&currentState, '\0', sizeof(struct gameState));
+	memset(&storedState, '\0', sizeof(struct gameState));
+	result = initializeGame(numPlayers, k, seed, &currentState); 
+	if (result < 0)
+	{
+		printf("Game initialization not successful.\n");
+		return -1;
+	}
+
+	//  Now we want to change the game state for
+	//  our testing conditions
+	cardToCount = copper;
+	player = 0;
+	copyGame(&currentState, &storedState);
+
+	//  Ready to test!
+	result = fullDeckCount(player, cardToCount, &currentState);
+	checkStateDifferences(&storedState, &currentState, checkFlags);
+	myAssert(result, 7, "copper Count");
+
+
+	//  Test #9
+	printf("\nPlayer's deck, hand, and discard are full of the card being counted\n");
+	memset(&currentState, '\0', sizeof(struct gameState));
+	memset(&storedState, '\0', sizeof(struct gameState));
+	result = initializeGame(numPlayers, k, seed, &currentState); 
+	if (result < 0)
+	{
+		printf("Game initialization not successful.\n");
+		return -1;
+	}
+
+	//  Now we want to change the game state for
+	//  our testing conditions
+	cardToCount = copper;
+	player = 0;
+	currentState.deckCount[player] = 10;
+	currentState.handCount[player] = 10;
+	currentState.discardCount[player] = 10;
+	for (i=0; i< currentState.deckCount[player]; i++)
+	{
+		currentState.deck[player][i] = copper;
+	}
+	for (i=0; i< currentState.handCount[player]; i++)
+	{
+		currentState.hand[player][i] = copper;
+	}
+	for (i=0; i< currentState.discardCount[player]; i++)
+	{
+		currentState.discard[player][i] = copper;
+	}
+	copyGame(&currentState, &storedState);
+
+	//  Ready to test!
+	result = fullDeckCount(player, cardToCount, &currentState);
+	checkStateDifferences(&storedState, &currentState, checkFlags);
+	myAssert(result, 30, "copper Count");
 	return 0;
 }

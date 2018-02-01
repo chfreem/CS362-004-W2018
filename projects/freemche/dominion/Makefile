@@ -47,12 +47,15 @@ unittest4: unittest4.c dominion.o rngs.o testingHelpers.o
 cardtest1: cardtest1.c dominion.o rngs.o testingHelpers.o
 	gcc -o cardtest1 -g cardtest1.c dominion.o rngs.o testingHelpers.o $(CFLAGS)
 
+cardtest2: cardtest2.c dominion.o rngs.o testingHelpers.o
+	gcc -o cardtest2 -g cardtest2.c dominion.o rngs.o testingHelpers.o $(CFLAGS)
+
 player: player.c interface.o
 	gcc -o player player.c -g  dominion.o rngs.o interface.o $(CFLAGS)
 
-all: playdom player testDrawCard testBuyCard badTestDrawCard unittest1 unittest2 unittest3 unittest4 cardtest1
+all: playdom player testDrawCard testBuyCard badTestDrawCard unittest1 unittest2 unittest3 unittest4 cardtest1 cardtest2
 
-unittestresults.out: unittest1.c unittest2.c unittest3.c unittest4.c cardtest1.c  dominion.c rngs.c testingHelpers.c
+unittestresults.out: unittest1.c unittest2.c unittest3.c unittest4.c cardtest1.c cardtest2.c  dominion.c rngs.c testingHelpers.c
 	echo "Result for running unit tests:" > unittestresults.out
 
 	echo "unittest1.c:  If problems are not reported, the test is successful" >> unittestresults.out
@@ -80,5 +83,10 @@ unittestresults.out: unittest1.c unittest2.c unittest3.c unittest4.c cardtest1.c
 	cardtest1 >> unittestresults.out
 	gcov cardtest1 dominion.c >> unittestresults.out
 
+	echo "cardtest2.c:  " >> unittestresults.out
+	gcc -o cardtest2 cardtest2.c dominion.o rngs.o testingHelpers.o $(CFLAGS)
+	cardtest2 >> unittestresults.out
+	gcov cardtest2 dominion.c >> unittestresults.out
+
 clean:
-	rm -f *.o playdom.exe playdom player player.exe  *.gcov *.gcda *.gcno *.so *.out testDrawCard testDrawCard.exe unittest1 unittest2 unittest3 unittest4 cardtest1 *.out badTestDrawCard
+	rm -f *.o playdom.exe playdom player player.exe  *.gcov *.gcda *.gcno *.so *.out testDrawCard testDrawCard.exe unittest1 unittest2 unittest3 unittest4 cardtest1 cardtest2 *.out badTestDrawCard

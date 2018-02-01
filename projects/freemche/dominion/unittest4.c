@@ -26,8 +26,6 @@ int main()
 {
 	int seed = 20;		//  for random function
 	int numPlayers = 2;
-	int player;
-	int cardToCount;
 	int result;		//  for storage of function return value
 	int i;
 

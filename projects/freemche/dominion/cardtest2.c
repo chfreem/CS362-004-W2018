@@ -1,4 +1,4 @@
-//  This file is intended to test the adventurer card's effect in the game
+//  This file is intended to test the smithy card's effect in the game
 //  Dominion.  It is heavily based on a file, cardtest4.c, which was
 //  provided as part of the class materials.
 //

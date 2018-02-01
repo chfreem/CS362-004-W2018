@@ -81,7 +81,7 @@ int main() {
 	myAssert(storedState.handCount[player]+2, currentState.handCount[player], "handCount higher by 2 (played 1, gained 3)");
 	myAssert(1, ((currentState.hand[player][currentState.handCount[player]-1] == gold)
 			&& (currentState.hand[player][currentState.handCount[player]-2] == gold)
-			&& (currentState.hand[player][currentState.handCount[player]-2] == gold)),
+			&& (currentState.hand[player][currentState.handCount[player]-3] == gold)),
 			"the cards from the deck are in the hand now");
 	myAssert(storedState.deckCount[player]-3,currentState.deckCount[player], "deckCount is smaller by 3");
 	myAssert(storedState.playedCardCount+1, currentState.playedCardCount, "playedCardCount");
@@ -112,6 +112,41 @@ int main() {
 	myAssert(storedState.deckCount[player],currentState.deckCount[player], "deckCount unchanged");
 	myAssert(storedState.playedCardCount+1, currentState.playedCardCount, "playedCardCount");
 	myAssert(smithy, currentState.playedCards[currentState.playedCardCount-1], "smithy is in playedCards");
+
+
+
+	printf("\nTesting smithy when deck has two cards in it\n");
+	result = initializeGame(numPlayers, k, seed, &currentState); 
+	if (result < 0)
+	{
+		printf("Game initialization not successful.\n");
+		return -1;
+	}
+
+	//  Now we want to change the game state for
+	//  our testing conditions
+
+	currentState.hand[player][0] = smithy;
+	currentState.deckCount[player] = 2;
+	for (i=0; i<currentState.deckCount[player]; i++)
+	{
+		currentState.deck[player][i] = gold;
+	}
+
+	//  Our game is set.  Let's save its "before" status.
+	copyGame(&currentState, &storedState);
+
+	cardEffect(smithy, 0, 0, 0, &currentState, 0, &bonus);
+	checkStateDifferences(&storedState, &currentState, checkFlags);
+
+	myAssert(storedState.handCount[player]+1, currentState.handCount[player], "handCount higher by 1 (played 1, gained 2)");
+	myAssert(1, ((currentState.hand[player][currentState.handCount[player]-1] == gold)
+			&& (currentState.hand[player][currentState.handCount[player]-2] == gold)),
+			"the cards from the deck are in the hand now");
+	myAssert(storedState.deckCount[player]-2,currentState.deckCount[player], "deckCount is smaller by 2");
+	myAssert(storedState.playedCardCount+1, currentState.playedCardCount, "playedCardCount");
+	myAssert(smithy, currentState.playedCards[currentState.playedCardCount-1], "smithy is in playedCards");
+
 	return 0;
 }
 

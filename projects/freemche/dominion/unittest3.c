@@ -14,7 +14,7 @@
 //  3--specify a player that is lower than 0
 //  4--choose a card to be counted that is lower than the allowed range
 //  5--choose a card to be counted that is higher than the allowed range
-//  6--choose a card to be counted that is not eing used in this game
+//  6--choose a card to be counted that is not being used in this game
 //  7--choose a card to be used, but that player doesn't possess any
 //  8--choose a card that is being used, and that player owns some
 //  9--fill the player's deck, hand, and discard all with the card to be
@@ -33,6 +33,7 @@ int main()
 	int seed = 20;		//  for random function
 	int numPlayers = 2;
 	int player;
+	int cardToCount;
 	int result;		//  for storage of function return value
 
 	//  I'm using the same cards as in playdom.c
@@ -47,7 +48,7 @@ int main()
 	int checkFlags[] = {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1};
 
 	//  Test #1
-	printf("player is higher than numPlayers\n");
+	printf("\nplayer is higher than numPlayers\n");
 	memset(&currentState, '\0', sizeof(struct gameState));
 	memset(&storedState, '\0', sizeof(struct gameState));
 	result = initializeGame(numPlayers, k, seed, &currentState); 
@@ -59,11 +60,134 @@ int main()
 
 	//  Now we want to change the game state for
 	//  our testing conditions
-	player = 893;
+	player = 3;
 	copyGame(&currentState, &storedState);
 
 	//  Ready to test!
 	result = fullDeckCount(player, copper, &currentState);
+	checkStateDifferences(&storedState, &currentState, checkFlags);
 	printf("fullDeckCount() returned a count of %d\n", result);
+	printf("WARNING: THIS IS SENSIBLE-LOOKING DATA RETURNING FROM A NONSENSE FUNCTION CALL.\n");
+	
+
+	//  Test #2
+	printf("\nplayer is higher than MAX_PLAYERS\n");
+//	memset(&currentState, '\0', sizeof(struct gameState));
+//	memset(&storedState, '\0', sizeof(struct gameState));
+//	result = initializeGame(numPlayers, k, seed, &currentState); 
+//	if (result < 0)
+//	{
+//		printf("Game initialization not successful.\n");
+//		return -1;
+//	}
+//
+//	//  Now we want to change the game state for
+//	//  our testing conditions
+//	player = 600;
+//	copyGame(&currentState, &storedState);
+//
+//	//  Ready to test!
+//	result = fullDeckCount(player, copper, &currentState);
+//	checkStateDifferences(&storedState, &currentState, checkFlags);
+//	printf("fullDeckCount() returned a count of %d\n", result);
+//	printf("WARNING: THIS IS SENSIBLE-LOOKING DATA RETURNING FROM A NONSENSE FUNCTION CALL.\n");
+	printf("This test sometimes causes a core dump.\n");
+	
+
+
+	//  Test #3
+	printf("\nplayer is a negative number\n");
+//	memset(&currentState, '\0', sizeof(struct gameState));
+//	memset(&storedState, '\0', sizeof(struct gameState));
+//	result = initializeGame(numPlayers, k, seed, &currentState); 
+//	if (result < 0)
+//	{
+//		printf("Game initialization not successful.\n");
+//		return -1;
+//	}
+//
+//	//  Now we want to change the game state for
+//	//  our testing conditions
+//	player = -1;
+//	copyGame(&currentState, &storedState);
+//
+//	//  Ready to test!
+//	result = fullDeckCount(player, copper, &currentState);
+//	checkStateDifferences(&storedState, &currentState, checkFlags);
+//	printf("fullDeckCount() returned a count of %d\n", result);
+//	printf("WARNING: THIS IS SENSIBLE-LOOKING DATA RETURNING FROM A NONSENSE FUNCTION CALL.\n");
+	printf("This test sometimes causes a core dump.\n");
+
+
+	//  Test #4
+	printf("\ncard to count is lower than approved range\n");
+	memset(&currentState, '\0', sizeof(struct gameState));
+	memset(&storedState, '\0', sizeof(struct gameState));
+	result = initializeGame(numPlayers, k, seed, &currentState); 
+	if (result < 0)
+	{
+		printf("Game initialization not successful.\n");
+		return -1;
+	}
+
+	//  Now we want to change the game state for
+	//  our testing conditions
+	cardToCount = -1;
+	player = 0;
+	copyGame(&currentState, &storedState);
+
+	//  Ready to test!
+	result = fullDeckCount(player, cardToCount, &currentState);
+	checkStateDifferences(&storedState, &currentState, checkFlags);
+	printf("fullDeckCount() returned a count of %d\n", result);
+	printf("WARNING: THIS IS SENSIBLE-LOOKING DATA RETURNING FROM A NONSENSE FUNCTION CALL.\n");
+
+	//  Test #5
+	printf("\ncard to count is higher than approved range\n");
+	memset(&currentState, '\0', sizeof(struct gameState));
+	memset(&storedState, '\0', sizeof(struct gameState));
+	result = initializeGame(numPlayers, k, seed, &currentState); 
+	if (result < 0)
+	{
+		printf("Game initialization not successful.\n");
+		return -1;
+	}
+
+	//  Now we want to change the game state for
+	//  our testing conditions
+	cardToCount = 27;
+	player = 0;
+	copyGame(&currentState, &storedState);
+
+	//  Ready to test!
+	result = fullDeckCount(player, cardToCount, &currentState);
+	checkStateDifferences(&storedState, &currentState, checkFlags);
+	printf("fullDeckCount() returned a count of %d\n", result);
+	printf("WARNING: THIS IS SENSIBLE-LOOKING DATA RETURNING FROM A NONSENSE FUNCTION CALL.\n");
+	
+
+
+	//  Test #6
+	printf("\ncard to count is not being used in this game\n");
+	memset(&currentState, '\0', sizeof(struct gameState));
+	memset(&storedState, '\0', sizeof(struct gameState));
+	result = initializeGame(numPlayers, k, seed, &currentState); 
+	if (result < 0)
+	{
+		printf("Game initialization not successful.\n");
+		return -1;
+	}
+
+	//  Now we want to change the game state for
+	//  our testing conditions
+	cardToCount = remodel;
+	player = 0;
+	copyGame(&currentState, &storedState);
+
+	//  Ready to test!
+	result = fullDeckCount(player, cardToCount, &currentState);
+	checkStateDifferences(&storedState, &currentState, checkFlags);
+//	printf("fullDeckCount() returned a count of %d\n", result);
+	myAssert(result, 0, "fullDeckCount", "fullDeckCount");
 	return 0;
 }

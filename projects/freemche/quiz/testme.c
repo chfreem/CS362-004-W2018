@@ -5,6 +5,8 @@
 
 char inputChar()
 {
+	//  The characters I want to generate vary between ascii
+	//  32 (the space) and 125 (the right curly brace)
 	int randomNum = rand()%126 + 32;
 	char c = (char)randomNum;
 	return c;
@@ -12,8 +14,34 @@ char inputChar()
 
 char *inputString()
 {
-    // TODO: rewrite this function
-    return "";
+	//  With thanks to https://stackoverflow.com/questions/12380758/
+	//  for help with malloc
+	//  Because I am looking for a specific order of
+	//  output, but there is a time limit on the generation of
+	//  it, I'm going to restrict my output to the characters
+	//  in "reset\0".
+	char* targetString = "reset";	//  This automatically
+	//	creates an array of 6 elements, with the last element being the
+	//	null terminator.  These are the characters we want to
+	//	draw from in our random selection.
+	char randomChar;
+	
+	char* randomString = malloc(sizeof(char)*7);
+	int i;
+
+	//  For each letter we want to fill in the randomString,
+	//  we'll generate a random number in the range [0,5]
+	//  and use that as our index to get a character from the
+	//  target string.  Then we'll assign it to the string that we'll
+	//  return.
+	for (i=0; i<6; i++)
+	{
+		int randomNum = rand()%6;
+		randomChar = targetString[randomNum];
+		randomString[i] = randomChar;
+	}
+	randomString[7] = '\0';
+	return randomString;
 }
 
 void testme()
@@ -46,6 +74,9 @@ void testme()
       printf("error ");
       exit(200);
     }
+    //  I added this line to testme() so that I don't have a memory leak
+    //  from the malloc call in testme()
+    free(s);
   }
 }
 

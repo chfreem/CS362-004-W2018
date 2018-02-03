@@ -27,6 +27,7 @@
 #include <stdio.h>
 #include "testingHelpers.h"
 #include "rngs.h"
+#define TESTFUNCTION "buyCard(), unittest2.c"
 
 int main()
 {
@@ -45,8 +46,11 @@ int main()
 	//  checked.  
 	int checkFlags[] = {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1};
 
+	printf("\n-------------------------------------------------------\n");
+	printf("----------------- Testing Function: %s ----------------\n", TESTFUNCTION);
+
 	//  Test # 1:  player wants to buy, but they don't have enough buys
-	printf("Trying to buy without any numBuys:\n");	
+	printf("\nTrying to buy without any numBuys:\n");	
 	memset(&currentState, '\0', sizeof(struct gameState));
 	memset(&storedState, '\0', sizeof(struct gameState));
 	result = initializeGame(numPlayers, k, seed, &currentState); 
@@ -77,7 +81,7 @@ int main()
 	
 	
 	//  Test # 2:  player wants to buy a card that has run out
-	printf("Trying to buy a card that has run out:\n");	
+	printf("\nTrying to buy a card that has run out:\n");	
 	memset(&currentState, '\0', sizeof(struct gameState));
 	memset(&storedState, '\0', sizeof(struct gameState));
 	result = initializeGame(numPlayers, k, seed, &currentState); 
@@ -110,7 +114,7 @@ int main()
 
 
 	//  Test # 3
-	printf("Trying to buy a card when I don't have enough cash:\n");	
+	printf("\nTrying to buy a card when I don't have enough cash:\n");	
 	memset(&currentState, '\0', sizeof(struct gameState));
 	memset(&storedState, '\0', sizeof(struct gameState));
 	result = initializeGame(numPlayers, k, seed, &currentState); 
@@ -143,7 +147,7 @@ int main()
 
 
 	//  Test # 4
-	printf("Trying to buy a card that doesn't exist:\n");	
+	printf("\nTrying to buy a card that doesn't exist:\n");	
 	memset(&currentState, '\0', sizeof(struct gameState));
 	memset(&storedState, '\0', sizeof(struct gameState));
 	result = initializeGame(numPlayers, k, seed, &currentState); 
@@ -177,7 +181,7 @@ int main()
 
 
 	//  Test # 5
-	printf("Trying to buy a card when in clean-up phase:\n");	
+	printf("\nTrying to buy a card when in clean-up phase:\n");	
 	memset(&currentState, '\0', sizeof(struct gameState));
 	memset(&storedState, '\0', sizeof(struct gameState));
 	result = initializeGame(numPlayers, k, seed, &currentState); 
@@ -211,7 +215,7 @@ int main()
 
 
 	//  Test # 6
-	printf("Trying to buy a card not used in this game:\n");	
+	printf("\nTrying to buy a card not used in this game:\n");	
 	memset(&currentState, '\0', sizeof(struct gameState));
 	memset(&storedState, '\0', sizeof(struct gameState));
 	result = initializeGame(numPlayers, k, seed, &currentState); 
@@ -253,12 +257,12 @@ int main()
 		result = initializeGame(numPlayers, k, seed, &currentState); 
 		if (embargoTest)
 		{
-			printf("Testing embargo functionality.\n");
+			printf("\nTesting embargo functionality.\n");
 			currentState.embargoTokens[duchy] = 1;
 		}
 		else
 		{
-			printf("Trying to make a legitimate purchase:\n");	
+			printf("\nTrying to make a legitimate purchase:\n");	
 		}
 		if (result < 0)
 		{

@@ -21,6 +21,7 @@
 #include <stdio.h>
 #include "testingHelpers.h"
 #include "rngs.h"
+#define TESTFUNCTION "shuffle(), unittest1.c"
 
 int main()
 {
@@ -39,6 +40,10 @@ int main()
 	//  function which components of the game state should be
 	//  checked.  
 	int checkFlags[] = {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1};
+
+	printf("\n-------------------------------------------------------\n");
+	printf("----------------- Testing Function: %s ----------------\n", TESTFUNCTION);
+
 
 	//  Test #1
 	printf("\nProvince cards are gone\n");

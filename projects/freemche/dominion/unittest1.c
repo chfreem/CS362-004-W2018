@@ -17,6 +17,7 @@
 #include <stdio.h>
 #include "testingHelpers.h"
 #include "rngs.h"
+#define TESTFUNCTION "shuffle(), unittest1.c"
 
 int main()
 {
@@ -58,6 +59,8 @@ int main()
 		differentCards[i] = i;
 	}
 
+	printf("\n-------------------------------------------------------\n");
+	printf("----------------- Testing Function: %s ----------------\n", TESTFUNCTION);
 	for (a=0; a < 2; a++)	//  Do this twice--once with different cards
 				//  and once with identical cards
 	{
@@ -69,7 +72,7 @@ int main()
 			{
 				if ((numCardsInDeck < 5) || (numCardsInDeck > 498))
 				{	//  We don't want so many printouts--only the interesting ones
-					printf("Test player %d with %d cards:  \n", player, numCardsInDeck);
+					printf("\nTest player %d with %d cards:  \n", player, numCardsInDeck);
 				}
 
 				//  Clear out the previous game state and stored state

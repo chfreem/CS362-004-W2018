@@ -27,6 +27,7 @@
 #include <stdio.h>
 #include "testingHelpers.h"
 #include "rngs.h"
+#define TESTFUNCTION "fullDeckCount(), unittest3.c"
 
 int main()
 {
@@ -47,6 +48,9 @@ int main()
 	//  function which components of the game state should be
 	//  checked.  
 	int checkFlags[] = {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1};
+
+	printf("\n-------------------------------------------------------\n");
+	printf("----------------- Testing Function: %s ----------------\n", TESTFUNCTION);
 
 	//  Test #1
 	printf("\nplayer is higher than numPlayers\n");

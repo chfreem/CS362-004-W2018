@@ -145,6 +145,32 @@ int main() {
 	myAssert(storedState.playedCardCount+2, currentState.playedCardCount, "playedCardCount higher by one");
 	myAssert(embargo, currentState.playedCards[storedState.playedCardCount+2], "playedCards contains embargo");
 
+	printf("\nTesting use of embargo, specifying an empty supply pile\n");
+	result = initializeGame(numPlayers, k, seed, &currentState); 
+	if (result < 0)
+	{
+		printf("Game initialization not successful.\n");
+		return -1;
+	}
+
+	//  Now we want to change the game state for
+	//  our testing conditions
+
+	currentState.hand[player][0] = embargo;
+	currentState.supplyCount[village] = 0;
+
+	//  Our game is set.  Let's save its "before" status.
+	copyGame(&currentState, &storedState);
+
+	result = cardEffect(embargo, village, 0, 0, &currentState, 0, &bonus);
+	checkStateDifferences(&storedState, &currentState, checkFlags);
+	myAssert(storedState.embargoTokens[village],currentState.embargoTokens[village], "embargoTokens for village unchanged");
+	myAssert(storedState.coins+2,currentState.coins, "coins higher by two");
+	myAssert(storedState.handCount[player]-1, currentState.handCount[player], "handCount decremented");
+	myAssert(numSpecificCardsInHand(&storedState, player, embargo)-1, numSpecificCardsInHand(&currentState, player, embargo), "embargo isn't in hand anymore");
+	myAssert(storedState.playedCardCount+1, currentState.playedCardCount, "playedCardCount higher by one");
+	myAssert(embargo, currentState.playedCards[storedState.playedCardCount+1], "playedCards contains embargo");
+
 	return 0;
 }
 

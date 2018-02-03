@@ -47,7 +47,6 @@ int main() {
 	int seed = 20;
 	int numPlayers = 2;
 	int player = 0;
-	int i;
 	int bonus = 0;
 	int result;		//  For storing result of function calls
 
@@ -84,6 +83,67 @@ int main() {
 
 	result = cardEffect(embargo, nonsenseSupplyCard, 0, 0, &currentState, 0, &bonus);
 	myAssert(-1, result, "cardEffect() returned a failure flag");
+
+
+	printf("\nTesting requesting a supply pile which isn't used in this game\n");
+	result = initializeGame(numPlayers, k, seed, &currentState); 
+	if (result < 0)
+	{
+		printf("Game initialization not successful.\n");
+		return -1;
+	}
+
+	//  Now we want to change the game state for
+	//  our testing conditions
+
+	currentState.hand[player][0] = embargo;
+	nonsenseSupplyCard = remodel;
+
+	//  Our game is set.  Let's save its "before" status.
+	copyGame(&currentState, &storedState);
+
+	result = cardEffect(embargo, nonsenseSupplyCard, 0, 0, &currentState, 0, &bonus);
+	myAssert(-1, result, "cardEffect() returned a failure flag");
+
+
+
+	printf("\nTesting requesting a legitimate supply pile \n");
+	result = initializeGame(numPlayers, k, seed, &currentState); 
+	if (result < 0)
+	{
+		printf("Game initialization not successful.\n");
+		return -1;
+	}
+
+	//  Now we want to change the game state for
+	//  our testing conditions
+
+	currentState.hand[player][0] = embargo;
+
+	//  Our game is set.  Let's save its "before" status.
+	copyGame(&currentState, &storedState);
+
+	result = cardEffect(embargo, village, 0, 0, &currentState, 0, &bonus);
+	checkStateDifferences(&storedState, &currentState, checkFlags);
+	myAssert(storedState.embargoTokens[village]+1,currentState.embargoTokens[village], "embargoTokens for village higher by one");
+	myAssert(storedState.coins+2,currentState.coins, "coins higher by two");
+	myAssert(storedState.handCount[player]-1, currentState.handCount[player], "handCount decremented");
+	myAssert(numSpecificCardsInHand(&storedState, player, embargo)-1, numSpecificCardsInHand(&currentState, player, embargo), "embargo isn't in hand anymore");
+	myAssert(storedState.playedCardCount+1, currentState.playedCardCount, "playedCardCount higher by one");
+	myAssert(embargo, currentState.playedCards[storedState.playedCardCount+1], "playedCards contains embargo");
+
+
+	//  I'm just going to compare the results against the earlier stored State, not store another state
+	printf("\nTesting adding an embargo token to a pile which already has an embargo token\n");
+	currentState.hand[player][0] = embargo;
+	result = cardEffect(embargo, village, 0, 0, &currentState, 0, &bonus);
+	checkStateDifferences(&storedState, &currentState, checkFlags);
+	myAssert(storedState.embargoTokens[village]+2,currentState.embargoTokens[village], "embargoTokens for village higher by one");
+	myAssert(storedState.coins+4,currentState.coins, "coins higher by two");
+	myAssert(storedState.handCount[player]-2, currentState.handCount[player], "handCount decremented");
+	myAssert(numSpecificCardsInHand(&storedState, player, embargo)-1, numSpecificCardsInHand(&currentState, player, embargo), "embargo isn't in hand anymore");
+	myAssert(storedState.playedCardCount+2, currentState.playedCardCount, "playedCardCount higher by one");
+	myAssert(embargo, currentState.playedCards[storedState.playedCardCount+2], "playedCards contains embargo");
 
 	return 0;
 }

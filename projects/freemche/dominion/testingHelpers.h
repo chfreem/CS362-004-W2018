@@ -16,4 +16,6 @@ void checkStateDifferences(struct gameState *oldGame,
 int changed(int old, int new);
 
 void countCardTypes(int* cardTypeTotals, struct gameState *state, int player);
+
+int numSpecificCardsInHand(struct gameState *state, int player, int cardToCount);
 #endif

@@ -259,3 +259,17 @@ void countCardTypes(int* cardTypeTotals, struct gameState *state, int player)
 	}
 	return;
 }
+
+int numSpecificCardsInHand(struct gameState *state, int player, int cardToCount)
+{
+	int cardCounter=0;
+	int i;
+	for (i=curse; i< treasure_map + 1; i++)	//  For each type of card
+	{
+		if (state->hand[player][i] == cardToCount)
+		{
+			cardCounter++;
+		}
+	}
+	return cardCounter;
+}

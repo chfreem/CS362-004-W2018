@@ -5,8 +5,9 @@
 
 char inputChar()
 {
-    // TODO: rewrite this function
-    return ' ';
+	int randomNum = rand()%126 + 32;
+	char c = (char)randomNum;
+	return c;
 }
 
 char *inputString()

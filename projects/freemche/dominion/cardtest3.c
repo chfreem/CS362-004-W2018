@@ -42,7 +42,7 @@
 #include <stdlib.h>
 #include "testingHelpers.h"
 
-#define TESTCARD "mine"
+#define TESTCARD "mine, cardtest3.c"
 
 int main() {
 	int seed = 20;

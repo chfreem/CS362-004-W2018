@@ -30,7 +30,7 @@
 #include <stdlib.h>
 #include "testingHelpers.h"
 
-#define TESTCARD "smithy"
+#define TESTCARD "smithy, cardtest2.c"
 
 int main() {
 	int seed = 20;

@@ -21,7 +21,7 @@
 #include <stdio.h>
 #include "testingHelpers.h"
 #include "rngs.h"
-#define TESTFUNCTION "shuffle(), unittest1.c"
+#define TESTFUNCTION "isGameOver(), unittest4.c"
 
 int main()
 {

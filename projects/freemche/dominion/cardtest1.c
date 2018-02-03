@@ -39,7 +39,7 @@
 #include <stdlib.h>
 #include "testingHelpers.h"
 
-#define TESTCARD "adventurer"
+#define TESTCARD "adventurer, cardtest1.c"
 
 int main() {
 	int seed = 20;

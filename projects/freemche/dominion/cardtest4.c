@@ -41,7 +41,7 @@
 #include <stdlib.h>
 #include "testingHelpers.h"
 
-#define TESTCARD "embargo"
+#define TESTCARD "embargo, cardtest4.c"
 
 int main() {
 	int seed = 20;

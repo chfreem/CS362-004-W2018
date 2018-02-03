@@ -89,11 +89,35 @@ int main() {
 	cardEffect(mine, copper, silver, 0, &currentState, 0, &bonus);
 	checkStateDifferences(&storedState, &currentState, checkFlags);
 
-//  a--supplyCount
-//  b--hand
-//  c--handCount
-//  f--playedCards
-//  g--playedCardCount
+	myAssert(storedState.supplyCount[player], currentState.supplyCount[player], "supplyCount unchanged");
+	myAssert(storedState.handCount[player]-1, currentState.handCount[player], "handCount down by one");
+	myAssert(storedState.playedCardCount+1, currentState.playedCardCount, "playedCardCount");
+	myAssert(mine, currentState.playedCards[currentState.playedCardCount-1], "mine is in playedCards");
+
+
+
+	printf("\nTesting use of Mine when there is no treasure card in player's hand\n");
+	result = initializeGame(numPlayers, k, seed, &currentState); 
+	if (result < 0)
+	{
+		printf("Game initialization not successful.\n");
+		return -1;
+	}
+
+	//  Now we want to change the game state for
+	//  our testing conditions
+
+	for (i=0; i<currentState.handCount[player]; i++)
+	{
+		currentState.hand[player][i] = mine;
+	}
+
+	//  Our game is set.  Let's save its "before" status.
+	copyGame(&currentState, &storedState);
+
+	cardEffect(mine, copper, silver, 0, &currentState, 0, &bonus);
+	checkStateDifferences(&storedState, &currentState, checkFlags);
+
 	myAssert(storedState.supplyCount[player], currentState.supplyCount[player], "supplyCount unchanged");
 	myAssert(storedState.handCount[player]-1, currentState.handCount[player], "handCount down by one");
 //	myAssert(1, ((currentState.hand[player][currentState.handCount[player]-1] == gold)
@@ -102,7 +126,6 @@ int main() {
 //			"the cards from the deck are in the hand now");
 	myAssert(storedState.playedCardCount+1, currentState.playedCardCount, "playedCardCount");
 	myAssert(mine, currentState.playedCards[currentState.playedCardCount-1], "mine is in playedCards");
-
 
 	return 0;
 }

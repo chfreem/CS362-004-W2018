@@ -33,10 +33,10 @@ runtests: testDrawCard
 	gcov dominion.c >> unittestresult.out
 	cat dominion.c.gcov >> unittestresult.out
 
-randomtestcard1.out: randomtestcard1.c dominion.c rngs.c testingHelpers.c
+randomtestcard1.out: randomtestcard1.c dominion.c rngs.c 
 	echo "Results for running random tests:" > randomtestcard1.out
 	echo "randomtestcard1:" >> randomtestcard1.out
-	gcc -o randomtestcard1 randomtestcard1.c dominion.o rngs.o testingHelpers.o $(CFLAGS)
+	gcc -o randomtestcard1 randomtestcard1.c dominion.o rngs.o $(CFLAGS)
 	randomtestcard1 >> randomtestcard1.out
 	gcov randomtestcard1 dominion.c >> randomtestcard1.out
 

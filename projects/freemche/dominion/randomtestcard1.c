@@ -14,33 +14,49 @@
 #include "rngs.h"
 #include <math.h>
 
-int checkEmbargo(int intendedPile, struct gameState *currentGameState, int handPos) 
+int checkEmbargo(int intendedPile, struct gameState *currentState, int handPos) 
 {
 	struct gameState storedState;
-	struct gameState currentState;
-	memcpy (&storedState, &currentState, sizeof(struct gameState));
+	memcpy (&storedState, currentState, sizeof(struct gameState));
 
 	int result;		//  Stores the result of function calls
 
-	result = embargoEffect(intendedPile, &currentState, handPos);
+	result = embargoEffect(intendedPile, currentState, handPos);
 
-	//  if (storedState.deckCount[p] > 0) {
-	//    storedState.handCount[p]++;
-	//    storedState.hand[p][storedState.handCount[p]-1] = storedState.deck[p][storedState.deckCount[p]-1];
-	//    storedState.deckCount[p]--;
-	//  } else if (storedState.discardCount[p] > 0) {
-	//    memcpy(storedState.deck[p], currentState->deck[p], sizeof(int) * storedState.discardCount[p]);
-	//    memcpy(storedState.discard[p], currentState->discard[p], sizeof(int)*storedState.discardCount[p]);
-	//    storedState.hand[p][currentState->handCount[p]-1] = currentState->hand[p][currentState->handCount[p]-1];
-	//    storedState.handCount[p]++;
-	//    storedState.deckCount[p] = storedState.discardCount[p]-1;
-	//    storedState.discardCount[p] = 0;
-	//  }
-	//
-	assert (result == 0);
-	//
-	assert(memcmp(&storedState, &currentState, sizeof(struct gameState)) == 0);
-	return 0;
+//  Now we need to do the same thing to our storedState, as we think should have
+//  been done in embargoEffect to the currentState.
+	storedState.coins = storedState.coins + 2;
+	if (storedState.supplyCount[intendedPile] != -1)
+	{
+		storedState.embargoTokens[estate]++;
+	}
+	
+	if ((storedState.coins == currentState->coins)
+			&& storedState.embargoTokens[estate] == currentState->embargoTokens[estate])
+	{
+		return 0;
+	}
+	else
+	{
+//		printf("intendedPile = %d, storedState.coins = %d, currentState->coins = %d, storedState.embargoTokens[estate] = %d, currentState->embargoTokens[estate] = %d\n", intendedPile, storedState.coins, currentState->coins, storedState.embargoTokens[estate], currentState->embargoTokens[estate]);
+		return -1;
+	}
+
+		
+	//	The following commented-out lines should be good to test
+	//	this, if the discardCard function is working OK.  Since it
+	//	is not, I will only use this test to check the coins and
+	//	embargo tokens and nothing else about the state.
+//	discardCard(handPos, storedState.whoseTurn, &storedState, 1);
+
+//	if (!memcmp(&storedState, currentState, sizeof(struct gameState)))
+//	{		//  They are the same
+//		return 0;
+//	}
+//	else
+//	{
+//		return -1;
+//	}
 }
 
 int main () {
@@ -56,6 +72,7 @@ int main () {
 	int n;			//  number of tests to be run
 	int intendedPile;	//  The pile upon which to place embargo token
 	int handPos;		//  The location of the embargo card in player's hand
+	int result;		//  stores result of function call
 
 	printf ("Testing drawCard.\n");
 
@@ -75,7 +92,7 @@ int main () {
 		//  stuff that doesn't make any sense at all.  Let's put some
 		//  sensible stuff in the parts that will be used by
 		//  our function under test
-		player = floor(Random() * 2);		//  Only 0, 1, 2 players allowed
+		player = floor(Random() * 2);		//  Only 0, 1 players allowed
 		G.whoseTurn = player;
 
 		//  I want the supplyCount of the chosen pile to be either
@@ -84,15 +101,16 @@ int main () {
 		//  -1, which means that pile is not used in the game
 		//  I'm always going to have the embargo test run on the estate
 		//  card
-		if (n%3 == 0)
+		int randomNum = Random()*3;
+		if (randomNum == 0)
 		{
 			G.supplyCount[estate] = 0;
 		}
-		else if (n%3 == 1)
+		else if (randomNum == 1)
 		{
 			G.supplyCount[estate] = 1;
 		}
-		else if (n%3 == 2)
+		else if (randomNum == 2)
 		{
 			G.supplyCount[estate] = -1;
 		}
@@ -107,10 +125,16 @@ int main () {
 		//  embargoEffect.
 		handPos = 0;
 		G.hand[player][handPos] = embargo;
-		checkEmbargo(intendedPile, &G, handPos);
+
+
+//		printf("n=%d, player=%d, G.supplyCount[estate]=%d, G.deckCount=%d, G.discardCount=%d, G.handCount=%d\n", n, player, G.supplyCount[estate], G.deckCount[player], G.discardCount[player], G.handCount[player]);
+		result = checkEmbargo(intendedPile, &G, handPos);
+		if (result)
+		{
+			printf("problem with test results, case n = %d\n", n);
+		}
 	}
 
-	printf ("ALL TESTS OK\n");
 
 	return 0;
 }

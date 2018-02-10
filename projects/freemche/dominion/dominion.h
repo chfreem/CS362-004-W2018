@@ -7,7 +7,7 @@
 #define MAX_DECK 500
 
 #define MAX_PLAYERS 4
-
+#define NUM_GAMESTATE_MEMBERS 18
 #define DEBUG 0
 
 /* http://dominion.diehrstraits.com has card texts */

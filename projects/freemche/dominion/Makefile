@@ -6,6 +6,9 @@ rngs.o: rngs.h rngs.c
 dominion.o: dominion.h dominion.c rngs.o
 	gcc -c dominion.c -g  $(CFLAGS)
 
+testingHelpers.o: testingHelpers.h testingHelpers.c
+	gcc -c testingHelpers.c -g $(CFLAGS)
+
 playdom: dominion.o playdom.c
 	gcc -o playdom playdom.c -g dominion.o rngs.o $(CFLAGS)
 #To run playdom you need to entere: ./playdom <any integer number> like ./playdom 10*/
@@ -16,8 +19,8 @@ randomtestcard1:  randomtestcard1.c dominion.o rngs.o
 randomtestcard2:  randomtestcard2.c dominion.o rngs.o
 	gcc -o randomtestcard2 -g randomtestcard2.c dominion.o rngs.o $(CFLAGS)
 
-randomtestadventurer:  randomtestadventurer.c dominion.o rngs.o
-	gcc -o randomtestadventurer -g randomtestadventurer.c dominion.o rngs.o $(CFLAGS)
+randomtestadventurer:  randomtestadventurer.c dominion.o rngs.o testingHelpers.o
+	gcc -o randomtestadventurer -g randomtestadventurer.c dominion.o rngs.o testingHelpers.o $(CFLAGS)
 
 testDrawCard: testDrawCard.c dominion.o rngs.o
 	gcc  -o testDrawCard -g  testDrawCard.c dominion.o rngs.o $(CFLAGS)
@@ -56,7 +59,7 @@ randomtestcard2.out: randomtestcard2.c dominion.c rngs.c
 randomtestadventurer.out: randomtestadventurer.c dominion.c rngs.c 
 	echo "Results for running random tests:" > randomtestadventurer.out
 	echo "randomtestadventurer:" >> randomtestadventurer.out
-	gcc -o randomtestadventurer randomtestadventurer.c dominion.o rngs.o $(CFLAGS)
+	gcc -o randomtestadventurer randomtestadventurer.c dominion.o rngs.o testingHelpers.o $(CFLAGS)
 	randomtestadventurer >> randomtestadventurer.out
 	gcov randomtestadventurer dominion.c >> randomtestadventurer.out
 

@@ -23,35 +23,22 @@ int checkAdventurer(struct gameState *currentState, int handPos)
 	
 //  now we need to do the same thing to our storedState, as we think should have
 //  been done in cardeffect to the currentState.
-//	storedState.numActions = storedState.numActions + 1;
-//	
-//	//  i want to draw a card for the stored state, but this might
-//	//  require shuffling the discard in order for there to be cards to draw.
-//	//  i would be unable to compare the stored and current states if i
-//	//  merely called "drawcard", because the different shuffling would introduce
-//	//  differences between them.  instead, i will follow the method in
-//	//  testdrawcard and check if the deck has cards in it.  if it does,
-//	//  then i'll draw a card.  if it doesn't, i'll copy the current state's
-//	//  deck and discard to the stored state and then draw a card.
-//	if (storedState.deckCount[player] > 0) {
-//		storedState.handCount[player]++;
-//		storedState.hand[player][storedState.handCount[player]-1] = storedState.deck[player][storedState.deckCount[player]-1];
-//		storedState.deckCount[player]--;
-//	} else if (storedState.discardCount[player] > 0) {
-//		//  There were no cards in the storedState's deck
-//		memcpy(storedState.deck[player], currentState->deck[player], sizeof(int) * storedState.discardCount[player]);
-//		memcpy(storedState.discard[player], currentState->discard[player], sizeof(int)*storedState.discardCount[player]);
-//		storedState.hand[player][currentState->handCount[player]-1] = currentState->hand[player][currentState->handCount[player]-1];
-//		storedState.handCount[player]++;
-//		storedState.deckCount[player] = storedState.discardCount[player]-1;
-//		storedState.discardCount[player] = 0;
-//	}
-//
-//		
-//	//	I'll just call discardCard() on the stored State, because I'm
-//	//	not testing that function.  There aren't problems with the
-//	//	mere discarding of a card.
-//	discardCard(handPos, storedState.whoseTurn, &storedState, 0);
+//  Because adventurerEffect involves a shuffle mid-point in its function,
+//  it's impossible for us to follow its actions exactly unless we just copy
+//  over its end state and rewind it to its immediate-post-shuffle state.
+//  Instead of that, I'm only going to check the handCount, hand, discardCount,
+//  and deckCount.
+	int tempHand[MAX_HAND];
+
+	int z=0;	//  the counter for the temp hand
+	int drawnTreasure = 0;
+	int cardDrawn;
+	while ((drawnTreasure < 2) || ((storedState.deckCount[player] + storedState.discardCount[player]) != 0))
+	{
+		if (storedState
+		drawCard(player, &storedState);
+		cardDrawn = storedState.hand[player][storedState
+
 
 	if (!memcmp(&storedState, currentState, sizeof(struct gameState)))
 	{		//  They are the same

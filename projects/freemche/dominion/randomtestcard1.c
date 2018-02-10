@@ -19,9 +19,7 @@ int checkEmbargo(int intendedPile, struct gameState *currentState, int handPos)
 	struct gameState storedState;
 	memcpy (&storedState, currentState, sizeof(struct gameState));
 
-	int result;		//  Stores the result of function calls
-
-	result = embargoEffect(intendedPile, currentState, handPos);
+	embargoEffect(intendedPile, currentState, handPos);
 
 //  Now we need to do the same thing to our storedState, as we think should have
 //  been done in embargoEffect to the currentState.

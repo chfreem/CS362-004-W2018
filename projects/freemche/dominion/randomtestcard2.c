@@ -64,7 +64,7 @@ int checkGreatHall(struct gameState *currentState, int handPos)
 	}
 	else
 	{
-		printf("storedState.numActions = %d, currentState->numActions = %d, \n", storedState.numActions, currentState->numActions);
+//		printf("storedState.numActions = %d, currentState->numActions = %d, \n", storedState.numActions, currentState->numActions);
 		return -1;
 	}
 }

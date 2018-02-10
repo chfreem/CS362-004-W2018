@@ -74,7 +74,7 @@ int main () {
 	int handPos;		//  The location of the embargo card in player's hand
 	int result;		//  stores result of function call
 
-	printf ("Testing drawCard.\n");
+	printf ("Testing embargoEffect\n");
 
 	printf ("RANDOM TESTS.\n");
 
@@ -118,6 +118,7 @@ int main () {
 		G.deckCount[player] = floor(Random() * MAX_DECK);
 		G.discardCount[player] = floor(Random() * MAX_DECK);
 		G.handCount[player] = floor(Random() * MAX_HAND);
+		G.playedCardCount = floor(Random() * MAX_DECK);
 		intendedPile = estate;
 		//  I'm going to specify that the embargo card played is
 		//  always in position 0 in the hand.  Not specifying this

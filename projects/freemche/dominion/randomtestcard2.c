@@ -1,4 +1,4 @@
-//  This is an automated random test generator for the dominion card Embargo.
+//  This is an automated random test generator for the dominion card Great Hall.
 //  It is strongly based on the example file distributed as part of the
 //  class materials in the file testDrawCard.c, which was possibly
 //  written by Alex Groce of Oregon State University.
@@ -10,71 +10,75 @@
 #include "dominion_helpers.h"
 #include <string.h>
 #include <stdio.h>
-#include <assert.h>
 #include "rngs.h"
 #include <math.h>
 
-int checkEmbargo(int intendedPile, struct gameState *currentState, int handPos) 
+int checkGreatHall(struct gameState *currentState, int handPos) 
 {
 	struct gameState storedState;
 	memcpy (&storedState, currentState, sizeof(struct gameState));
+	int result;		//  stores the result of function calls
 
-	int result;		//  Stores the result of function calls
-
-	result = embargoEffect(intendedPile, currentState, handPos);
-
-//  Now we need to do the same thing to our storedState, as we think should have
-//  been done in embargoEffect to the currentState.
-	storedState.coins = storedState.coins + 2;
-	if (storedState.supplyCount[intendedPile] != -1)
-	{
-		storedState.embargoTokens[estate]++;
-	}
+	int cardToPlay = great_hall;
+	int choice1, choice2, choice3;
+	choice1 = choice2 = choice3 = 0;
+	int bonus = 0;
+	int player = currentState->whoseTurn;
+//	printf("cardToPlay = %d, choice1 = %d, choice2 = %d, choice3 = %d, currentState->hand[player][0] = %d, handPos = %d, bonus = %d\n", cardToPlay, choice1, choice2, choice3, currentState->hand[player][0], handPos, bonus);
+	result = cardEffect(cardToPlay, choice1, choice2, choice3, currentState, handPos, &bonus);
+//  now we need to do the same thing to our storedState, as we think should have
+//  been done in cardeffect to the currentState.
+	storedState.numActions = storedState.numActions + 1;
 	
-	if ((storedState.coins == currentState->coins)
-			&& storedState.embargoTokens[estate] == currentState->embargoTokens[estate])
-	{
+	//  i want to draw a card for the stored state, but this might
+	//  require shuffling the discard in order for there to be cards to draw.
+	//  i would be unable to compare the stored and current states if i
+	//  merely called "drawcard", because the different shuffling would introduce
+	//  differences between them.  instead, i will follow the method in
+	//  testdrawcard and check if the deck has cards in it.  if it does,
+	//  then i'll draw a card.  if it doesn't, i'll copy the current state's
+	//  deck and discard to the stored state and then draw a card.
+	if (storedState.deckCount[player] > 0) {
+		storedState.handCount[player]++;
+		storedState.hand[player][storedState.handCount[player]-1] = storedState.deck[player][storedState.deckCount[player]-1];
+		storedState.deckCount[player]--;
+	} else if (storedState.discardCount[player] > 0) {
+		//  There were no cards in the storedState's deck
+		memcpy(storedState.deck[player], currentState->deck[player], sizeof(int) * storedState.discardCount[player]);
+		memcpy(storedState.discard[player], currentState->discard[player], sizeof(int)*storedState.discardCount[player]);
+		storedState.hand[player][currentState->handCount[player]-1] = currentState->hand[player][currentState->handCount[player]-1];
+		storedState.handCount[player]++;
+		storedState.deckCount[player] = storedState.discardCount[player]-1;
+		storedState.discardCount[player] = 0;
+	}
+
+		
+	//	I'll just call discardCard() on the stored State, because I'm
+	//	not testing that function.  There aren't problems with the
+	//	mere discarding of a card.
+	discardCard(handPos, storedState.whoseTurn, &storedState, 0);
+
+	if (!memcmp(&storedState, currentState, sizeof(struct gameState)))
+	{		//  They are the same
 		return 0;
 	}
 	else
 	{
-//		printf("intendedPile = %d, storedState.coins = %d, currentState->coins = %d, storedState.embargoTokens[estate] = %d, currentState->embargoTokens[estate] = %d\n", intendedPile, storedState.coins, currentState->coins, storedState.embargoTokens[estate], currentState->embargoTokens[estate]);
+		printf("storedState.numActions = %d, currentState->numActions = %d, \n", storedState.numActions, currentState->numActions);
 		return -1;
 	}
-
-		
-	//	The following commented-out lines should be good to test
-	//	this, if the discardCard function is working OK.  Since it
-	//	is not, I will only use this test to check the coins and
-	//	embargo tokens and nothing else about the state.
-//	discardCard(handPos, storedState.whoseTurn, &storedState, 1);
-
-//	if (!memcmp(&storedState, currentState, sizeof(struct gameState)))
-//	{		//  They are the same
-//		return 0;
-//	}
-//	else
-//	{
-//		return -1;
-//	}
 }
 
 int main () {
 
-	//  int i, n, result, p, deckCount, discardCount, handCount;
-
-	//  I'm using the same piles as used in playdom.c
-//	int k[10] = {adventurer, gardens, embargo, village, minion, mine, cutpurse,
-//		sea_hag, tribute, smithy};
 	int i;
 	int player;
 	struct gameState G;
 	int n;			//  number of tests to be run
-	int intendedPile;	//  The pile upon which to place embargo token
-	int handPos;		//  The location of the embargo card in player's hand
+	int handPos;		//  The location of the Great Hall card in player's hand
 	int result;		//  stores result of function call
 
-	printf ("Testing drawCard.\n");
+	printf ("Testing cardEffect's case great_hall.\n");
 
 	printf ("RANDOM TESTS.\n");
 
@@ -92,43 +96,24 @@ int main () {
 		//  stuff that doesn't make any sense at all.  Let's put some
 		//  sensible stuff in the parts that will be used by
 		//  our function under test
+		//  Great Hall causes the player to draw a card, so their
+		//  hand changes, their deck changes,  and also gives them an action.
 		player = floor(Random() * 2);		//  Only 0, 1 players allowed
 		G.whoseTurn = player;
-
-		//  I want the supplyCount of the chosen pile to be either
-		//  0, which means the pile is empty
-		//  1, which means there's a card there to put an embargo Token on
-		//  -1, which means that pile is not used in the game
-		//  I'm always going to have the embargo test run on the estate
-		//  card
-		int randomNum = Random()*3;
-		if (randomNum == 0)
-		{
-			G.supplyCount[estate] = 0;
-		}
-		else if (randomNum == 1)
-		{
-			G.supplyCount[estate] = 1;
-		}
-		else if (randomNum == 2)
-		{
-			G.supplyCount[estate] = -1;
-		}
-
 		G.deckCount[player] = floor(Random() * MAX_DECK);
 		G.discardCount[player] = floor(Random() * MAX_DECK);
 		G.handCount[player] = floor(Random() * MAX_HAND);
-		intendedPile = estate;
-		//  I'm going to specify that the embargo card played is
+		G. playedCardCount = floor(Random() * MAX_DECK);
+		//  I'm going to specify that the Great Hall card played is
 		//  always in position 0 in the hand.  Not specifying this
 		//  would break discardCard(), when what I really want to test is
-		//  embargoEffect.
+		//  the great_hall case of cardEffect()
 		handPos = 0;
-		G.hand[player][handPos] = embargo;
+		G.hand[player][handPos] = great_hall;
 
 
-//		printf("n=%d, player=%d, G.supplyCount[estate]=%d, G.deckCount=%d, G.discardCount=%d, G.handCount=%d\n", n, player, G.supplyCount[estate], G.deckCount[player], G.discardCount[player], G.handCount[player]);
-		result = checkEmbargo(intendedPile, &G, handPos);
+//		printf("n=%d, player=%d, G.deckCount=%d, G.discardCount=%d, G.handCount=%d\n", n, player, G.deckCount[player], G.discardCount[player], G.handCount[player]);
+		result = checkGreatHall(&G, handPos);
 		if (result)
 		{
 			printf("problem with test results, case n = %d\n", n);

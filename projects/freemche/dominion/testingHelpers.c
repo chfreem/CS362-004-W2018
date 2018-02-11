@@ -273,3 +273,31 @@ int numSpecificCardsInHand(struct gameState *state, int player, int cardToCount)
 	}
 	return cardCounter;
 }
+
+int numSpecificCardsInDeck(struct gameState *state, int player, int cardToCount)
+{
+	int cardCounter=0;
+	int i;
+	for (i=curse; i< treasure_map + 1; i++)	//  For each type of card
+	{
+		if (state->deck[player][i] == cardToCount)
+		{
+			cardCounter++;
+		}
+	}
+	return cardCounter;
+}
+
+int numSpecificCardsInDiscard(struct gameState *state, int player, int cardToCount)
+{
+	int cardCounter=0;
+	int i;
+	for (i=curse; i< treasure_map + 1; i++)	//  For each type of card
+	{
+		if (state->discard[player][i] == cardToCount)
+		{
+			cardCounter++;
+		}
+	}
+	return cardCounter;
+}

@@ -12,12 +12,15 @@
 #include <stdio.h>
 #include "rngs.h"
 #include <math.h>
+#include "testingHelpers.h"
 
 int checkAdventurer(struct gameState *currentState, int handPos) 
 {
 	struct gameState storedState;
 	memcpy (&storedState, currentState, sizeof(struct gameState));
 	int player = currentState->whoseTurn;
+	int problemFlag = 0;
+	int i;
 
 	adventurerEffect(currentState);
 	
@@ -28,27 +31,113 @@ int checkAdventurer(struct gameState *currentState, int handPos)
 //  over its end state and rewind it to its immediate-post-shuffle state.
 //  Instead of that, I'm only going to check the handCount, hand, discardCount,
 //  and deckCount.
-	int tempHand[MAX_HAND];
+	//  First, check how many treasure cards are in the deck and discard
+	int numTreasureCards = 0;
+	numTreasureCards = numTreasureCards + 
+		numSpecificCardsInDeck(&storedState, player, copper) +
+		numSpecificCardsInDeck(&storedState, player, silver) +
+		numSpecificCardsInDeck(&storedState, player, gold) +
+		numSpecificCardsInDiscard(&storedState, player, copper) +
+		numSpecificCardsInDiscard(&storedState, player, silver) +
+		numSpecificCardsInDiscard(&storedState, player, gold); 
 
-	int z=0;	//  the counter for the temp hand
-	int drawnTreasure = 0;
-	int cardDrawn;
-	while ((drawnTreasure < 2) || ((storedState.deckCount[player] + storedState.discardCount[player]) != 0))
+	if (numTreasureCards == 0)
 	{
-		if (storedState
-		drawCard(player, &storedState);
-		cardDrawn = storedState.hand[player][storedState
-
-
-	if (!memcmp(&storedState, currentState, sizeof(struct gameState)))
-	{		//  They are the same
-		return 0;
+		//  The hand should be moved down by one card (the adventurer), 
+		//  the deck should be empty,
+		//  and the discard should have all the deck's cards in it
+		//  plus the played adventurer card
+		for (i = 0; i < currentState->handCount[player]; i++)
+		{
+			if (currentState->hand[player][i] != storedState.hand[player][i] + 1)
+			{
+				problemFlag = 1;
+				printf("0 treasure cards, cards should be moved down in hand but are not\n");
+			}
+		}
+		if (currentState->deckCount[player] != 0)
+		{
+			problemFlag = 1;
+			printf("0 treasure cards, deckCount should be zero but is not\n");
+		}
+		if (currentState->discardCount[player] != (storedState.discardCount[player] + storedState.deckCount[player]))
+		{
+			problemFlag = 1;
+			printf("0 treasure cards, all cards should be in discard but are not\n");
+		}
+	}
+	else if (numTreasureCards == 1)
+	{
+		//  The hand should have one extra treasure card in it,
+		//  but one less adventurer in it,
+		//  the deck should be empty, and the discard should
+		//  have all the deck's cards in it plus the played adventurer card
+		int storedStateHandTreasureCardNum = numSpecificCardsInHand(&storedState, player, copper) +
+				numSpecificCardsInHand(&storedState, player, silver) +
+				numSpecificCardsInHand(&storedState, player, gold);
+		int currentStateHandTreasureCardNum = numSpecificCardsInHand(currentState, player, copper) +
+				numSpecificCardsInHand(currentState, player, silver) +
+				numSpecificCardsInHand(currentState, player, gold);
+		if (currentStateHandTreasureCardNum != (storedStateHandTreasureCardNum + 1))
+		{
+			problemFlag = 1;
+			printf("1 treasure card, but one treasure card was not added to hand\n");
+		}
+		if (currentState->handCount[player] != storedState.handCount[player])
+		{
+			problemFlag = 1;
+			printf("1 treasure card, but handCount doesn't reflect adding it and subtracting the played adventurer card\n");
+		}
+		if (currentState->deckCount[player] != 0)
+		{
+			problemFlag = 1;
+			printf("1 treasure card, but the deck is not empty\n");
+		}
+		if (currentState->discardCount[player] != (storedState.discardCount[player] + storedState.deckCount[player] + 1))
+		{
+			problemFlag = 1;
+			printf("1 treasure card, but discard doesn't have all cards from deck in it plus the played adventurer card\n");
+		}
 	}
 	else
 	{
-//		printf("storedState.numActions = %d, currentState->numActions = %d, \n", storedState.numActions, currentState->numActions);
-		return -1;
+		//  numTreasureCards is 2 or higher
+		//  The hand should have two extra treasure cards in it,
+		//  one less adventurer card in it,
+		//  the deck plus discard should have two fewer cards from putting treasure cards into hand
+		//  but one more card from the played adventurer card
+		int storedStateHandTreasureCardNum = numSpecificCardsInHand(&storedState, player, copper) +
+				numSpecificCardsInHand(&storedState, player, silver) +
+				numSpecificCardsInHand(&storedState, player, gold);
+		int currentStateHandTreasureCardNum = numSpecificCardsInHand(currentState, player, copper) +
+				numSpecificCardsInHand(currentState, player, silver) +
+				numSpecificCardsInHand(currentState, player, gold);
+		if (currentStateHandTreasureCardNum != (storedStateHandTreasureCardNum + 2))
+		{
+			problemFlag = 1;
+			printf(">=2 treasure cards, but 2 have not been added to hand\n");
+
+//				printf("currentStateHandTreasureCardNum = %d, storedStateHandTreasureCardNum = %d\n", currentStateHandTreasureCardNum, storedStateHandTreasureCardNum);
+		}
+		if (currentState->handCount[player]  != (storedState.handCount[player] + 1))
+		{
+			problemFlag = 1;
+			printf(">=2 treasure cards, but handCount is not (+2 treas, -1 advent)\n");
+		}
+		if ((currentState->discardCount[player] + currentState->deckCount[player])  != (storedState.discardCount[player] + storedState.deckCount[player] - 1))
+		{
+			problemFlag = 1;
+			printf(">=2 treasure cards, but combined deck and discard are not down by 1 (-2 treas, +1 advent)\n");
+		}
 	}
+	//  Now that all the specific changes have been logged, I'll do one
+	//  more check to see if anything unexpected has changed about the
+	//  game state.  I don't expect that this will print out anything, but
+	//  it can be checked for in the output file.
+	int checkFlags[] = {1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0};	
+	checkStateDifferences(&storedState, currentState, checkFlags);
+
+	return problemFlag;
 }
 
 int main () {
@@ -67,7 +156,7 @@ int main () {
 	SelectStream(2);
 	PutSeed(3);
 
-	for (n = 0; n < 20; n++) {		//  The number of random tests we'll run
+	for (n = 0; n < 20000; n++) {		//  The number of random tests we'll run
 		//  Not sure why "256" in the next statement, but it worked
 		//  for Dr. Groce so I'll keep it.
 		for (i = 0; i < sizeof(struct gameState); i++) {

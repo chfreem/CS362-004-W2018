@@ -1,4 +1,35 @@
-nclude "dominion.h"
+//  This file is intended to test the adventurer card's effect in the game
+//  Dominion.  It is heavily based on a file, cardtest4.c, which was
+//  provided as part of the class materials.
+//
+//  Cheryl Freeman, freemche@oregonstate.edu
+//  CS362-400, Winter 2018
+//  
+//  Adventurer has the following functionality:
+//  It costs 6 to buy.  When you use it, you go through your deck,
+//  revealing cards and setting them aside (not into the discard until
+//  you need to shuffle) until you have found two treasure cards.  These
+//  treasure cards go into your hand.  Then you put the revealed cards
+//  into your discard pile.
+//  To test the functionality of Adventurer, I will check the following:
+//  1--no treasure cards in your deck
+//  2--1 treasure card in your deck
+//  3--2 treasure cards in your deck, at the end of the deck
+//  4--many treasure cards in your deck
+//  5--post test 3 or 4, which should function successfully, I will
+//     check that the game state is the same, except for the following
+//     expected changes:
+//     a--handCount higher by 2
+//     b--hand contains the 2 treasure cards added on the back
+//     c--deckCount is smaller by the number of revealed cards
+//     d--deck does not contain the revealed cards anymore
+//     e--discardCount is higher by the number of discarded cards
+//     f--discard contains the discarded cards
+//
+//   (The numActions decrement and the coins addition from this card are
+//   carried out in playCard(), which is not being tested with this
+//   unit test.)
+#include "dominion.h"
 #include "dominion_helpers.h"
 #include <string.h>
 #include <stdio.h>

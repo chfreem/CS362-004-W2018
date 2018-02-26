@@ -1,4 +1,26 @@
-nclude "dominion.h"
+//  This file is intended to test the smithy card's effect in the game
+//  Dominion.  It is heavily based on a file, cardtest4.c, which was
+//  provided as part of the class materials.
+//
+//  Cheryl Freeman, freemche@oregonstate.edu
+//  CS362-400, Winter 2018
+//  
+//  Smithy has the following functionality:
+//  It costs 4 to buy.  It allows you to draw 3 cards from your
+//  deck and add them to your hand.
+//  To test the functionality of Smithy, I will check the following:
+//  1--player's hand has three additional cards
+//  2--player's deck is three cards smaller
+//  3--The cards which were in the deck are now the cards in the hand
+//  4--No other changes should occur to the game state
+//
+//  To try to break Smithy, I will check what happens when
+//  5--player's deck had no cards, so they can't gain any
+//
+//   (The numActions decrement and the coins addition from this card are
+//   carried out in playCard(), which is not being tested with this
+//   unit test.)
+#include "dominion.h"
 #include "dominion_helpers.h"
 #include <string.h>
 #include <stdio.h>

@@ -1,10 +1,10 @@
-FLAGS = -Wall -fpic -coverage -lm
+CFLAGS = -Wall -fpic -coverage -lm
 
 rngs.o: rngs.h rngs.c
-	gcc -std=c99 -c rngs.c -g  $(CFLAGS)
+	gcc -std=c99 -c rngs.c -g $(CFLAGS)
 
 dominion.o: dominion.h dominion.c rngs.o
-	gcc -std=c99 -c dominion.c -g  $(CFLAGS)
+	gcc -std=c99 -c dominion.c -g $(CFLAGS)
 
 testingHelpers.o: testingHelpers.h testingHelpers.c
 	gcc -std=c99 -c testingHelpers.c -g $(CFLAGS)
@@ -13,19 +13,19 @@ playdom: dominion.o playdom.c
 	gcc -std=c99 -o playdom playdom.c -g dominion.o rngs.o $(CFLAGS)
 #To run playdom you need to entere: ./playdom <any integer number> like ./playdom 10*/
 testDrawCard: testDrawCard.c dominion.o rngs.o
-	gcc -std=c99 -o testDrawCard -g  testDrawCard.c dominion.o rngs.o $(CFLAGS)
+	gcc -std=c99 -o testDrawCard -g testDrawCard.c dominion.o rngs.o $(CFLAGS)
 
 badTestDrawCard: badTestDrawCard.c dominion.o rngs.o
-	gcc -std=c99 -o badTestDrawCard -g  badTestDrawCard.c dominion.o rngs.o $(CFLAGS)
+	gcc -std=c99 -o badTestDrawCard -g badTestDrawCard.c dominion.o rngs.o $(CFLAGS)
 
 testBuyCard: testDrawCard.c dominion.o rngs.o
-	gcc -std=c99 -o testDrawCard -g  testDrawCard.c dominion.o rngs.o $(CFLAGS)
+	gcc -std=c99 -o testDrawCard -g testDrawCard.c dominion.o rngs.o $(CFLAGS)
 
 testAll: dominion.o testSuite.c
-	gcc -std=c99 -o testSuite testSuite.c -g  dominion.o rngs.o $(CFLAGS)
+	gcc -std=c99 -o testSuite testSuite.c -g dominion.o rngs.o $(CFLAGS)
 
 interface.o: interface.h interface.c
-	gcc -std=c99 -c interface.c -g  $(CFLAGS)
+	gcc -std=c99 -c interface.c -g $(CFLAGS)
 
 runtests: testDrawCard 
 	./testDrawCard &> unittestresult.out
@@ -57,7 +57,7 @@ cardtest4: cardtest4.c dominion.o rngs.o testingHelpers.o
 	gcc -std=c99 -o cardtest4 -g cardtest4.c dominion.o rngs.o testingHelpers.o $(CFLAGS)
 
 player: player.c interface.o
-	gcc -std=c99 -o player player.c -g  dominion.o rngs.o interface.o $(CFLAGS)
+	gcc -std=c99 -o player player.c -g dominion.o rngs.o interface.o $(CFLAGS)
 
 all: playdom player testDrawCard testBuyCard badTestDrawCard unittest1 unittest2 unittest3 unittest4 cardtest1 cardtest2 cardtest3 cardtest4
 

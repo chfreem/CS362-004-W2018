@@ -19,7 +19,12 @@ int checkEmbargo(int intendedPile, struct gameState *currentState, int handPos)
 	struct gameState storedState;
 	memcpy (&storedState, currentState, sizeof(struct gameState));
 
-	embargoEffect(intendedPile, currentState, handPos);
+//	embargoEffect(intendedPile, currentState, handPos);
+//  The line above was what was required for testing embargo in my own dominion.c
+//  file.  To test someone else's embargo card, I need to call the cardEffect()
+//  function instead.
+	int bonus;
+	cardEffect(embargo, intendedPile, 0, 0, currentState, 0, &bonus);
 
 //  Now we need to do the same thing to our storedState, as we think should have
 //  been done in embargoEffect to the currentState.

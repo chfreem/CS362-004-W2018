@@ -33,7 +33,7 @@
 //   carried out in playCard(), which is not being tested with this
 //   unit test.)
 
-include "dominion.h"
+#include "dominion.h"
 #include "dominion_helpers.h"
 #include <string.h>
 #include <stdio.h>

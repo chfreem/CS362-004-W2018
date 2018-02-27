@@ -22,7 +22,12 @@ int checkAdventurer(struct gameState *currentState, int handPos)
 	int problemFlag = 0;
 	int i;
 
-	adventurerEffect(currentState);
+	//	The line below was written to test my own dominion.c
+	//	To test someone else's, I need to call the cardEffect function
+	//	instead.
+//	adventurerEffect(currentState);
+	int bonus;
+	cardEffect(adventurer, 0, 0, 0, currentState, 0, &bonus);
 	
 //  now we need to do the same thing to our storedState, as we think should have
 //  been done in cardeffect to the currentState.

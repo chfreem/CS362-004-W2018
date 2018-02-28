@@ -1,0 +1,125 @@
+Bug Report #1
+=============
+With thanks to the noverse Bug Reporting Template,
+http://www.noverse.com/images/noverse-bug-reporting-template.txt
+
+Title:  adventurer card does not recognize gold or silver as treasure
+
+Class:  Minor bug
+
+Date:  28 Feb 2018
+Reported By: Cheryl Freeman
+Email:  freemche@oregonstate.edu
+
+Product:  dominion.c, Version Assignment 2 branch from
+https://github.com/Polemics/CS362-004-W2018.git
+
+Platform:  
+Linux version 3.10.0-693.11.1.el7.x86_64 (builder@kbuilder.dev.centos.org) (gcc version 4.8.5 20150623 (Red Hat 4.8.5-16) (GCC) ) #1 SMP Mon Dec 4 23:52:40 UTC 2017
+
+Is it reproducible?  Yes
+
+Description:
+When I draw a treasure card, after having played adventurer, it only
+recognizes the card as a treasure if it is a copper.  Gold and silver
+do not get recognized as treasure cards.
+
+Steps to produce/reproduce:
+---------------------------
+Fill your deck with golds.
+Play the adventurer card.
+Start drawing from your deck.
+
+Expected results:
+---------------------------
+After two golds are drawn, you should stop drawing because you have
+two treasure cards.
+
+Actual results:
+---------------------------
+You keep going through your deck until you have found two coppers,
+or until you've looked at every card you have.
+
+The same steps, expected results, and actual results apply with
+silvers as with golds.
+
+Workarounds:
+---------------------------
+None
+
+Attachments:
+---------------------------
+None
+
+Other information:
+---------------------------
+I think the bug is probably found in the logic statement for 
+the cardDrawn in cardAdventurer.  I think it checks to see if
+the card drawn is a copper, but then has something wonky in the
+check for the card drawn being silver or gold.
+Thanks so much for writing a fun game!  I really like to play it.  Hope you
+get this fixed soon.
+
+
+
+
+
+Bug Report #2
+=============
+With thanks to the noverse Bug Reporting Template,
+http://www.noverse.com/images/noverse-bug-reporting-template.txt
+
+Title:  mine card allows me to upgrade from copper to gold
+
+Class:  Minor bug
+
+Date:  28 Feb 2018
+Reported By: Cheryl Freeman
+Email:  freemche@oregonstate.edu
+
+Product:  dominion.c, Version Assignment 2 branch from
+https://github.com/Polemics/CS362-004-W2018.git
+
+Platform:  
+Linux version 3.10.0-693.11.1.el7.x86_64 (builder@kbuilder.dev.centos.org) (gcc version 4.8.5 20150623 (Red Hat 4.8.5-16) (GCC) ) #1 SMP Mon Dec 4 23:52:40 UTC 2017
+
+Is it reproducible?  Yes
+
+Description:
+I play a mine card, which allows me to upgrade from one money level to the
+next higher level (copper->silver, silver->gold).  But this bug allows me
+to upgrade from copper->gold.
+
+Steps to produce/reproduce:
+---------------------------
+Put a copper in your hand in position 0.
+Play the mine card.
+Choose to upgrade your copper to a gold.
+
+Expected results:
+---------------------------
+You should be told no, or be given an error message, or be asked
+to specify a card within 3 coins cost of the copper you are trashing.
+
+Actual results:
+---------------------------
+Your hand now has a gold in it.
+
+Workarounds:
+---------------------------
+None
+
+Attachments:
+---------------------------
+None
+
+Other information:
+---------------------------
+I think the problem probably lies in cardMine().  The check for the cost
+of the chosen card is incorrect, because it checks for the cost of the
+card you are trashing, and compares it with the cost of an incorrectly-
+specified card (choice1).  What is happening, is that because you said
+you wanted to trash the card in hand position 0, it looks up the cost of
+card 0, which is curse (cost 0).  Anything you want to upgrade to is
+affordable.
+

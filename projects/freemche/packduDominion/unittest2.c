@@ -288,8 +288,8 @@ int main()
 			int failed = 0;
 			if (embargoTest)
 			{
-				if ((currentState.supplyCount[duchy] != storedState.supplyCount[duchy] - 1)
-					&& (currentState.supplyCount[curse] != storedState.supplyCount[curse] - 1))
+				if ((currentState.supplyCount[duchy] != (storedState.supplyCount[duchy] - 1))
+					|| (currentState.supplyCount[curse] != (storedState.supplyCount[curse] - 1)))
 				{
 					printf("buyCard() worked, but didn't affect supply of curses.\n");
 					failed = 1;

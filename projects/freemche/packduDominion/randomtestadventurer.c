@@ -161,6 +161,7 @@ int main () {
 	SelectStream(2);
 	PutSeed(3);
 
+//	for (n = 0; n < 1500; n++) {		//  The number of random tests we'll run
 	for (n = 0; n < 20000; n++) {		//  The number of random tests we'll run
 		//  Not sure why "256" in the next statement, but it worked
 		//  for Dr. Groce so I'll keep it.

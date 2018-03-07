@@ -7,7 +7,6 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="src" path="test"/>
-	<classpathentry exported="true" kind="lib" path="/scratch/workspace/Classes/Winter 2018/eclipse/URLValidatorCorrect2018/junit-4.12.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Mom/Documents/GitHub/CS362-004-W2018/junit-4.12.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Mom/Desktop/junit-4.12.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
